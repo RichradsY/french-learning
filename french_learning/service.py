@@ -43,13 +43,17 @@ class LearningService:
                     and study_date == date.today().isoformat()
                     and self.repository.monthly_api_calls(study_date[:7]) + 2 <= self.max_monthly_api_calls
                 ):
+                    reservation_id = self.repository.reserve_api_usage(
+                        getattr(self.content_provider, "model", type(self.content_provider).__name__),
+                        request_count=2,
+                    )
                     try:
                         questions, vocabulary, usage = self.content_provider.generate(
                             study_date,
                             self.repository.recent_prompts(limit=None),
                             self.repository.recent_words(limit=None),
                         )
-                        self.repository.record_api_usage(usage)
+                        self.repository.finalize_api_usage(reservation_id, usage)
                         generated = (questions, vocabulary)
                         source = f"mistral:{usage['model']}"
                     except Exception as exc:
@@ -97,7 +101,9 @@ class LearningService:
             submitted = str(answers.get(str(question["id"]), ""))
             accepted = {normalize_answer(answer) for answer in question["accepted"]}
             graded.append((question["id"], submitted, normalize_answer(submitted) in accepted))
-        self.repository.submit(session_id, graded)
+        score = self.repository.submit(session_id, graded)
+        if score is None:
+            raise ConflictError("Cette séance a déjà été corrigée")
         return self._present(self.repository.get_session(session_id), True)
 
     def history(self):

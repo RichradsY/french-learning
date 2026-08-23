@@ -139,6 +139,47 @@ class CoreLearningTest(unittest.TestCase):
         self.assertEqual(10, result["score"])
         self.assertTrue(all(question["is_correct"] for question in result["questions"]))
 
+    def test_concurrent_submission_is_claimed_exactly_once(self):
+        session = self.service.get_or_create_day("2026-08-23", reveal=True)
+        correct = [
+            (question["id"], question["answer"], True)
+            for question in session["questions"]
+        ]
+        wrong = [
+            (question["id"], "x", False)
+            for question in session["questions"]
+        ]
+        barrier = threading.Barrier(2)
+        results, errors = [], []
+
+        def submit(graded):
+            repository = Repository(self.repo.path)
+            try:
+                barrier.wait()
+                results.append(repository.submit(session["id"], graded))
+            except Exception as exc:
+                errors.append(exc)
+            finally:
+                repository.close()
+
+        threads = [
+            threading.Thread(target=submit, args=(correct,)),
+            threading.Thread(target=submit, args=(wrong,)),
+        ]
+        for thread in threads:
+            thread.start()
+        for thread in threads:
+            thread.join(timeout=5)
+        self.assertEqual([], errors)
+        self.assertEqual(1, sum(result is not None for result in results))
+        self.assertEqual(1, sum(result is None for result in results))
+        stored = self.repo.get_session(session["id"])
+        if stored is None:
+            self.fail("Concurrent submission removed the session")
+        self.assertEqual("completed", stored["status"])
+        self.assertIn(stored["score"], (0, 10))
+        self.assertEqual(10, sum("user_answer" in q for q in stored["questions"]))
+
     def test_submission_requires_exact_question_set_and_completed_score_is_immutable(self):
         session = self.service.get_or_create_day("2026-08-23", reveal=True)
         complete = {str(q["id"]): q["answer"] for q in session["questions"]}

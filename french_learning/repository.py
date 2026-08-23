@@ -154,6 +154,31 @@ class Repository:
                 ),
             )
 
+    def reserve_api_usage(self, model, request_count=2):
+        now = datetime.now().astimezone().isoformat(timespec="seconds")
+        with self.connection:
+            cursor = self.connection.execute(
+                """INSERT INTO api_usage(
+                    used_at, model, prompt_tokens, completion_tokens, request_count
+                ) VALUES (?, ?, 0, 0, ?)""",
+                (now, model, request_count),
+            )
+        return cursor.lastrowid
+
+    def finalize_api_usage(self, usage_id, usage):
+        with self.connection:
+            self.connection.execute(
+                """UPDATE api_usage
+                   SET model = ?, prompt_tokens = ?, completion_tokens = ?
+                   WHERE id = ?""",
+                (
+                    usage["model"],
+                    usage["prompt_tokens"],
+                    usage["completion_tokens"],
+                    usage_id,
+                ),
+            )
+
     def session_id_for_date(self, study_date):
         row = self.connection.execute("SELECT id FROM daily_sessions WHERE study_date = ?", (study_date,)).fetchone()
         return row[0] if row else None
@@ -207,7 +232,13 @@ class Repository:
     def submit(self, session_id, graded_answers):
         now = datetime.now().astimezone().isoformat(timespec="seconds")
         with self.connection:
-            self.connection.execute("DELETE FROM responses WHERE session_id = ?", (session_id,))
+            claimed = self.connection.execute(
+                """UPDATE daily_sessions SET status = 'grading'
+                   WHERE id = ? AND status = 'ready'""",
+                (session_id,),
+            )
+            if claimed.rowcount != 1:
+                return None
             self.connection.executemany(
                 "INSERT INTO responses(session_id, question_id, user_answer, is_correct, graded_at) VALUES (?, ?, ?, ?, ?)",
                 [(session_id, question_id, answer, int(correct), now) for question_id, answer, correct in graded_answers],

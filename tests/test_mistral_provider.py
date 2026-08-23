@@ -34,6 +34,17 @@ class FakeProvider:
         }
 
 
+class FailingProvider:
+    model = "fake-failing-model"
+
+    def __init__(self):
+        self.calls = 0
+
+    def generate(self, study_date, avoid_prompts=(), avoid_words=()):
+        self.calls += 1
+        raise ProviderUnavailableError("simulated provider failure")
+
+
 class MistralProviderValidationTest(unittest.TestCase):
     def test_api_key_rejects_curl_config_injection_characters(self):
         self.assertEqual("valid_token-1234567890", _validate_api_key("valid_token-1234567890"))
@@ -58,6 +69,20 @@ class MistralProviderValidationTest(unittest.TestCase):
         with patch("french_learning.mistral_provider.subprocess.run", fake_run):
             response = MistralContentProvider()._post({"model": "test"}, dummy_key)
         self.assertIn("choices", response)
+
+    def test_failed_provider_attempt_is_still_charged_to_budget(self):
+        with TemporaryDirectory() as folder:
+            repository = Repository(f"{folder}/learning.db")
+            provider = FailingProvider()
+            try:
+                session = LearningService(repository, content_provider=provider).get_or_create_day(
+                    date.today().isoformat()
+                )
+                self.assertEqual(1, provider.calls)
+                self.assertEqual("offline", session["content_source"])
+                self.assertEqual(2, repository.monthly_api_calls(date.today().isoformat()[:7]))
+            finally:
+                repository.close()
 
     def test_two_request_budget_does_not_overshoot_limit(self):
         with TemporaryDirectory() as folder:
@@ -121,6 +146,18 @@ class MistralProviderValidationTest(unittest.TestCase):
         replaced = replace_model_mcqs({"questions": questions, "vocabulary": vocabulary}, avoid)
         selected = {item["prompt"] for item in replaced["questions"][:5]}
         self.assertNotIn(MCQ[0]["prompt"], selected)
+
+    def test_all_used_controlled_mcqs_choose_oldest_from_newest_first_history(self):
+        questions, vocabulary = generate_content("2026-08-23", {}, {})
+        newest_to_oldest = [item["prompt"] for item in MCQ]
+        replaced = replace_model_mcqs(
+            {"questions": questions, "vocabulary": vocabulary}, newest_to_oldest
+        )
+        selected = [item["prompt"] for item in replaced["questions"][:5]]
+        self.assertEqual(
+            [item["prompt"] for item in reversed(MCQ[-5:])],
+            selected,
+        )
 
     def test_model_mcqs_are_replaced_with_controlled_items(self):
         questions, vocabulary = generate_content("2026-08-23", {}, {})
