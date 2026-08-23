@@ -6,6 +6,7 @@ __pycache__/
 # Runtime data
 data/*.db
 data/*.db-*
+data/*.lock
 logs/
 *.pid
 

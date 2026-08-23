@@ -12,6 +12,9 @@
 | 词汇和句子发音 | Web Speech API `fr-FR` | 手动浏览器验收 |
 | 简明、利于学习 | 设计令牌、单列卡片、渐进披露 | 视觉验收与响应式检查 |
 | 每天 7:00 安排 | 应用补偿调度 + LaunchAgent | 生成命令、plist 检查、幂等测试 |
+| 安全使用 Mistral | Keychain、私有 curl config、格式/超时校验 | 密钥不进命令行测试与 staged secret scan |
+| 在线质量与成本 | 双阶段生成/审校、受控 MCQ、历史去重、70 HTTP 请求月上限、整套离线回退 | provider、预算、中文答案、来源和重复内容回归测试 |
+| 旧数据安全升级 | 文件锁内幂等 SQLite migration | 旧 schema 双线程迁移测试 |
 
 ## Definition of Done
 

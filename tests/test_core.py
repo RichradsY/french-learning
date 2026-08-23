@@ -1,10 +1,12 @@
 import re
+import sqlite3
 import tempfile
+import threading
 import unittest
 from pathlib import Path
 
 from french_learning.repository import Repository
-from french_learning.service import LearningService
+from french_learning.service import ConflictError, LearningService, ValidationError
 
 
 class CoreLearningTest(unittest.TestCase):
@@ -28,6 +30,7 @@ class CoreLearningTest(unittest.TestCase):
             if question["kind"] == "mcq":
                 self.assertEqual(4, len(question["options"]))
                 self.assertEqual(set(question["options"]), set(question["option_explanations"]))
+                self.assertTrue(all(re.search(r"[\u4e00-\u9fff]", explanation) for explanation in question["option_explanations"].values()))
                 self.assertFalse(any(re.search(r"[\u4e00-\u9fff]", option) for option in question["options"]))
         self.assertEqual(5, sum(v["category"] == "community" for v in session["vocabulary"]))
         self.assertEqual(5, sum(v["category"] == "daily" for v in session["vocabulary"]))
@@ -40,6 +43,77 @@ class CoreLearningTest(unittest.TestCase):
         first_hashes = {q["content_hash"] for q in first["questions"]}
         second_hashes = {q["content_hash"] for q in second["questions"]}
         self.assertFalse(first_hashes & second_hashes)
+
+    def test_concurrent_same_day_generation_creates_one_session(self):
+        db_path = Path(self.temp.name) / "concurrent.db"
+        barrier = threading.Barrier(4)
+        ids, errors = [], []
+
+        def generate():
+            repository = Repository(db_path)
+            try:
+                barrier.wait()
+                ids.append(LearningService(repository).get_or_create_day("2026-08-27")["id"])
+            except Exception as exc:
+                errors.append(exc)
+            finally:
+                repository.close()
+
+        threads = [threading.Thread(target=generate) for _ in range(4)]
+        for thread in threads:
+            thread.start()
+        for thread in threads:
+            thread.join(timeout=5)
+        self.assertEqual([], errors)
+        self.assertEqual(1, len(set(ids)))
+
+    def test_concurrent_old_schema_migration_is_idempotent(self):
+        db_path = Path(self.temp.name) / "old-schema.db"
+        connection = sqlite3.connect(db_path)
+        connection.execute("""CREATE TABLE api_usage (
+            id INTEGER PRIMARY KEY, used_at TEXT NOT NULL, model TEXT NOT NULL,
+            prompt_tokens INTEGER NOT NULL, completion_tokens INTEGER NOT NULL
+        )""")
+        connection.execute(
+            "INSERT INTO api_usage VALUES (1, '2026-08-01T07:00:00', 'legacy', 10, 20)"
+        )
+        connection.commit()
+        connection.close()
+        barrier = threading.Barrier(2)
+        errors = []
+
+        def migrate():
+            try:
+                barrier.wait()
+                repository = Repository(db_path)
+                repository.close()
+            except Exception as exc:
+                errors.append(exc)
+
+        threads = [threading.Thread(target=migrate) for _ in range(2)]
+        for thread in threads:
+            thread.start()
+        for thread in threads:
+            thread.join(timeout=5)
+        self.assertEqual([], errors)
+        connection = sqlite3.connect(db_path)
+        try:
+            columns = {row[1] for row in connection.execute("PRAGMA table_info(api_usage)")}
+            self.assertIn("request_count", columns)
+            self.assertEqual(
+                2,
+                connection.execute("SELECT request_count FROM api_usage WHERE id = 1").fetchone()[0],
+            )
+        finally:
+            connection.close()
+
+    def test_vocabulary_avoids_repeats_until_each_category_pool_is_exhausted(self):
+        first = self.service.get_or_create_day("2026-08-23", reveal=True)
+        second = self.service.get_or_create_day("2026-08-24", reveal=True)
+        for category in ("community", "daily"):
+            first_words = {v["word"] for v in first["vocabulary"] if v["category"] == category}
+            second_words = {v["word"] for v in second["vocabulary"] if v["category"] == category}
+            self.assertFalse(first_words & second_words)
 
     def test_answers_are_hidden_until_submission_then_every_option_is_explained(self):
         session = self.service.get_or_create_day("2026-08-23")
@@ -64,6 +138,18 @@ class CoreLearningTest(unittest.TestCase):
         result = self.service.submit(session["id"], answers)
         self.assertEqual(10, result["score"])
         self.assertTrue(all(question["is_correct"] for question in result["questions"]))
+
+    def test_submission_requires_exact_question_set_and_completed_score_is_immutable(self):
+        session = self.service.get_or_create_day("2026-08-23", reveal=True)
+        complete = {str(q["id"]): q["answer"] for q in session["questions"]}
+        with self.assertRaises(ValidationError):
+            self.service.submit(session["id"], {})
+        with self.assertRaises(ValidationError):
+            self.service.submit(session["id"], {**complete, "999999": "x"})
+        result = self.service.submit(session["id"], complete)
+        self.assertEqual(10, result["score"])
+        with self.assertRaises(ConflictError):
+            self.service.submit(session["id"], complete)
 
     def test_history_mistakes_and_grammar_aggregate_from_submissions(self):
         session = self.service.get_or_create_day("2026-08-23")

@@ -3,8 +3,11 @@ from __future__ import annotations
 
 import json
 import sqlite3
+from contextlib import contextmanager
 from datetime import datetime
 from pathlib import Path
+
+import fcntl
 
 from .content import GRAMMAR
 
@@ -15,16 +18,18 @@ class Repository:
         self.path.parent.mkdir(parents=True, exist_ok=True)
         self.connection = sqlite3.connect(self.path, check_same_thread=False)
         self.connection.row_factory = sqlite3.Row
-        self.connection.execute("PRAGMA foreign_keys = ON")
-        self.connection.execute("PRAGMA journal_mode = WAL")
-        self._initialize()
+        self.connection.execute("PRAGMA busy_timeout = 5000")
+        with self.generation_lock():
+            self.connection.execute("PRAGMA foreign_keys = ON")
+            self.connection.execute("PRAGMA journal_mode = WAL")
+            self._initialize()
 
     def _initialize(self):
         self.connection.executescript("""
         CREATE TABLE IF NOT EXISTS daily_sessions (
             id INTEGER PRIMARY KEY, study_date TEXT NOT NULL UNIQUE,
             status TEXT NOT NULL DEFAULT 'ready', generated_at TEXT NOT NULL,
-            submitted_at TEXT, score INTEGER
+            submitted_at TEXT, score INTEGER, content_source TEXT NOT NULL DEFAULT 'offline'
         );
         CREATE TABLE IF NOT EXISTS questions (
             id INTEGER PRIMARY KEY, session_id INTEGER NOT NULL REFERENCES daily_sessions(id) ON DELETE CASCADE,
@@ -52,7 +57,19 @@ class Repository:
             grammar_key TEXT PRIMARY KEY, title_fr TEXT NOT NULL, explanation_fr TEXT NOT NULL,
             explanation_zh TEXT NOT NULL, example_fr TEXT NOT NULL
         );
+        CREATE TABLE IF NOT EXISTS api_usage (
+            id INTEGER PRIMARY KEY, used_at TEXT NOT NULL, model TEXT NOT NULL,
+            prompt_tokens INTEGER NOT NULL, completion_tokens INTEGER NOT NULL,
+            request_count INTEGER NOT NULL DEFAULT 1
+        );
         """)
+        columns = {row[1] for row in self.connection.execute("PRAGMA table_info(daily_sessions)")}
+        if "content_source" not in columns:
+            self.connection.execute("ALTER TABLE daily_sessions ADD COLUMN content_source TEXT NOT NULL DEFAULT 'offline'")
+        usage_columns = {row[1] for row in self.connection.execute("PRAGMA table_info(api_usage)")}
+        if "request_count" not in usage_columns:
+            self.connection.execute("ALTER TABLE api_usage ADD COLUMN request_count INTEGER NOT NULL DEFAULT 1")
+            self.connection.execute("UPDATE api_usage SET request_count = 2")
         self.connection.executemany(
             "INSERT OR IGNORE INTO grammar_points VALUES (?, ?, ?, ?, ?)",
             [(key, *value) for key, value in GRAMMAR.items()],
@@ -62,18 +79,91 @@ class Repository:
     def close(self):
         self.connection.close()
 
-    def used_hashes(self):
-        return {row[0] for row in self.connection.execute("SELECT DISTINCT content_hash FROM questions")}
+    @contextmanager
+    def generation_lock(self):
+        lock_path = self.path.with_suffix(self.path.suffix + ".generation.lock")
+        lock_path.parent.mkdir(parents=True, exist_ok=True)
+        with lock_path.open("a+") as handle:
+            fcntl.flock(handle.fileno(), fcntl.LOCK_EX)
+            try:
+                yield
+            finally:
+                fcntl.flock(handle.fileno(), fcntl.LOCK_UN)
+
+    def question_usage(self):
+        return {
+            row["content_hash"]: row["last_seen"]
+            for row in self.connection.execute("""
+                SELECT q.content_hash, MAX(s.study_date) AS last_seen
+                FROM questions q JOIN daily_sessions s ON s.id = q.session_id
+                GROUP BY q.content_hash
+            """)
+        }
+
+    def vocabulary_usage(self):
+        return {
+            f"{row['category']}:{row['word']}": row["last_seen"]
+            for row in self.connection.execute("""
+                SELECT v.category, v.word, MAX(s.study_date) AS last_seen
+                FROM vocabulary v JOIN daily_sessions s ON s.id = v.session_id
+                GROUP BY v.category, v.word
+            """)
+        }
+
+    def recent_prompts(self, limit=40):
+        query = """
+            SELECT q.prompt FROM questions q JOIN daily_sessions s ON s.id = q.session_id
+            ORDER BY s.study_date DESC, q.position
+        """
+        params = ()
+        if limit is not None:
+            query += " LIMIT ?"
+            params = (limit,)
+        return [row[0] for row in self.connection.execute(query, params)]
+
+    def recent_words(self, limit=80):
+        query = """
+            SELECT v.word FROM vocabulary v JOIN daily_sessions s ON s.id = v.session_id
+            ORDER BY s.study_date DESC, v.id
+        """
+        params = ()
+        if limit is not None:
+            query += " LIMIT ?"
+            params = (limit,)
+        return [row[0] for row in self.connection.execute(query, params)]
+
+    def monthly_api_calls(self, month_prefix):
+        return self.connection.execute(
+            "SELECT COALESCE(SUM(request_count), 0) FROM api_usage WHERE used_at LIKE ?",
+            (f"{month_prefix}%",),
+        ).fetchone()[0]
+
+    def record_api_usage(self, usage):
+        now = datetime.now().astimezone().isoformat(timespec="seconds")
+        with self.connection:
+            self.connection.execute(
+                """INSERT INTO api_usage(
+                    used_at, model, prompt_tokens, completion_tokens, request_count
+                ) VALUES (?, ?, ?, ?, ?)""",
+                (
+                    now,
+                    usage["model"],
+                    usage["prompt_tokens"],
+                    usage["completion_tokens"],
+                    usage.get("request_count", 1),
+                ),
+            )
 
     def session_id_for_date(self, study_date):
         row = self.connection.execute("SELECT id FROM daily_sessions WHERE study_date = ?", (study_date,)).fetchone()
         return row[0] if row else None
 
-    def create_session(self, study_date, questions, vocabulary):
+    def create_session(self, study_date, questions, vocabulary, content_source="offline"):
         now = datetime.now().astimezone().isoformat(timespec="seconds")
         with self.connection:
             cursor = self.connection.execute(
-                "INSERT INTO daily_sessions(study_date, generated_at) VALUES (?, ?)", (study_date, now)
+                "INSERT INTO daily_sessions(study_date, generated_at, content_source) VALUES (?, ?, ?)",
+                (study_date, now, content_source),
             )
             session_id = cursor.lastrowid
             self.connection.executemany(

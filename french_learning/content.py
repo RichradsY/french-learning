@@ -11,7 +11,14 @@ def _mcq(prompt, options, answer, grammar_key, fr, zh, reasons):
         "kind": "mcq", "prompt": prompt, "options": options, "answer": answer,
         "accepted": [answer], "grammar_key": grammar_key,
         "explanation_fr": fr, "explanation_zh": zh,
-        "option_explanations": {option: reasons[index] for index, option in enumerate(options)},
+        "option_explanations": {
+            option: f"{reasons[index]} " + (
+                "正确：该选项符合本句的语法与语义。"
+                if option == answer
+                else "不正确：请根据前述法语说明辨别其时态、句法或语义问题。"
+            )
+            for index, option in enumerate(options)
+        },
     }
 
 
@@ -101,25 +108,29 @@ def content_hash(question):
     return hashlib.sha256(raw.encode("utf-8")).hexdigest()
 
 
-def _select(pool, count, used, seed):
+def _select(pool, count, usage, seed):
     candidates = deepcopy(pool)
     random.Random(seed).shuffle(candidates)
-    fresh = [item for item in candidates if content_hash(item) not in used]
-    chosen = fresh[:count]
-    if len(chosen) < count:
-        chosen.extend(item for item in candidates if content_hash(item) in used and item not in chosen)
+    candidates.sort(key=lambda item: usage.get(content_hash(item), ""))
+    chosen = candidates[:count]
     for item in chosen:
         item["content_hash"] = content_hash(item)
     return chosen
 
 
-def generate_content(study_date, used_hashes):
-    questions = _select(MCQ, 5, used_hashes, f"{study_date}:mcq") + _select(FILL, 5, used_hashes, f"{study_date}:fill")
+def generate_content(study_date, question_usage, vocabulary_usage):
+    questions = _select(MCQ, 5, question_usage, f"{study_date}:mcq") + _select(FILL, 5, question_usage, f"{study_date}:fill")
     for index, question in enumerate(questions, 1):
         question["position"] = index
     rng = random.Random(study_date)
-    community = rng.sample(COMMUNITY_VOCAB, 5)
-    daily = rng.sample(DAILY_VOCAB, 5)
+    community = list(COMMUNITY_VOCAB)
+    daily = list(DAILY_VOCAB)
+    rng.shuffle(community)
+    rng.shuffle(daily)
+    community.sort(key=lambda entry: vocabulary_usage.get(f"community:{entry[0]}", ""))
+    daily.sort(key=lambda entry: vocabulary_usage.get(f"daily:{entry[0]}", ""))
+    community = community[:5]
+    daily = daily[:5]
     vocabulary = []
     for category, entries in (("community", community), ("daily", daily)):
         for entry in entries:

@@ -1,0 +1,46 @@
+const state = { today: null, answers: {}, view: 'today' };
+const view = document.querySelector('#view');
+const statusBox = document.querySelector('#status');
+const esc = value => String(value ?? '').replace(/[&<>'"]/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[char]));
+
+async function api(path, options = {}) {
+  const response = await fetch(path, {headers:{'Content-Type':'application/json'}, ...options});
+  const data = await response.json();
+  if (!response.ok) throw new Error(data.error?.message || 'Erreur de connexion');
+  return data;
+}
+function setStatus(message='', error=false){statusBox.textContent=message;statusBox.className=`status${error?' error':''}`}
+function speak(text){if(!('speechSynthesis' in window))return setStatus('La synthèse vocale n’est pas disponible.',true);speechSynthesis.cancel();const utterance=new SpeechSynthesisUtterance(text);utterance.lang='fr-FR';utterance.rate=.88;speechSynthesis.speak(utterance)}
+function speakButton(text,label='Écouter'){return `<button class="speak" data-speak="${esc(text)}" aria-label="${esc(label)}">◉ ${esc(label)}</button>`}
+
+async function showToday(){
+  setStatus('Préparation de votre séance…');
+  try{state.today=await api('/api/today');state.answers={};renderToday();setStatus('');}catch(error){setStatus(error.message,true)}
+}
+function renderToday(){
+  const s=state.today, done=s.status==='completed';
+  const answered=done?s.questions.length:Object.values(state.answers).filter(v=>String(v).trim()).length;
+  const sourceLabel=s.content_source?.startsWith('mistral:')?'Contenu Mistral contrôlé':'Contenu hors ligne contrôlé';
+  view.innerHTML=`<div class="hero"><div><div class="eyebrow">Séance du ${esc(formatDate(s.study_date))}</div><h1>${done?'Séance terminée':'Votre entraînement du jour'}</h1><p>${done?`Score : ${s.score}/10 · Consultez les explications.`:`10 questions · environ 15 minutes · ${sourceLabel}`}</p></div><div class="progress-box"><div class="progress-label"><span>Progression</span><strong>${answered}/10</strong></div><div class="progress"><span style="width:${answered*10}%"></span></div></div></div>${s.questions.map((q,i)=>questionCard(q,i,done)).join('')}<div class="actions"><span class="action-note">${done?'Les réponses et explications sont maintenant visibles.':`Encore ${10-answered} réponse${10-answered===1?'':'s'}.`}</span>${done?'<button class="secondary" data-view="history">Voir l’historique</button>':'<button id="submit" class="primary">Corriger mes réponses</button>'}</div>`;
+  bindCommon();
+  if(!done){view.querySelectorAll('input').forEach(input=>input.addEventListener('input',captureAnswer));document.querySelector('#submit').addEventListener('click',submitToday)}
+}
+function questionCard(q,index,done){
+  const result=done?(q.is_correct?'correct':'incorrect'):'';
+  const control=q.kind==='mcq'?q.options.map(option=>`<label class="option"><input type="radio" name="q-${q.id}" value="${esc(option)}" ${q.user_answer===option?'checked':''} ${done?'disabled':''}><span>${esc(option)}</span></label>`).join(''):`<input class="fill-input" name="q-${q.id}" autocomplete="off" value="${esc(q.user_answer||'')}" placeholder="Écrivez votre réponse" ${done?'disabled':''}>`;
+  const explanation=done?`<div class="explanation"><p class="answer-line ${q.is_correct?'good':'bad'}">${q.is_correct?'✓ Bonne réponse':'✕ À revoir'} · Réponse : ${esc(q.answer)}</p><p><strong>Votre réponse :</strong> ${esc(q.user_answer||'—')}</p><p lang="fr">${esc(q.explanation_fr)}</p><p lang="zh">${esc(q.explanation_zh)}</p>${q.kind==='mcq'?`<ul class="option-notes">${q.options.map(option=>`<li><strong>${esc(option)}</strong> — ${esc(q.option_explanations[option])}</li>`).join('')}</ul>`:''}</div>`:'';
+  return `<article class="question-card ${result}"><div class="q-meta"><span>Question ${index+1} · ${q.kind==='mcq'?'Choix multiple':'Texte à compléter'}</span>${done?`<span class="q-result">${q.is_correct?'Correct':'Incorrect'}</span>`:''}</div><div class="prompt" lang="fr">${esc(q.prompt)} ${speakButton(q.prompt,'Écouter la phrase')}</div>${control}${explanation}</article>`;
+}
+function captureAnswer(event){const id=event.target.name.split('-')[1];state.answers[id]=event.target.value;renderProgress()}
+function renderProgress(){const count=Object.values(state.answers).filter(v=>v.trim()).length;document.querySelector('.progress span').style.width=`${count*10}%`;document.querySelector('.progress-label strong').textContent=`${count}/10`;document.querySelector('.action-note').textContent=`Encore ${10-count} réponse${10-count===1?'':'s'}.`}
+async function submitToday(){const button=document.querySelector('#submit');button.disabled=true;setStatus('Correction en cours…');try{state.today=await api(`/api/sessions/${state.today.id}/submit`,{method:'POST',body:JSON.stringify({answers:state.answers})});renderToday();setStatus(`Séance corrigée : ${state.today.score}/10.`);window.scrollTo({top:0,behavior:'smooth'})}catch(error){button.disabled=false;setStatus(error.message,true)}}
+
+async function showHistory(){setStatus('Chargement…');try{const items=await api('/api/history');view.innerHTML=`<h1 class="section-title">Historique</h1><p class="section-subtitle">Vos séances, conservées uniquement sur cet ordinateur.</p>${items.length?items.map(item=>`<article class="panel history-row"><div><strong>${esc(formatDate(item.study_date))}</strong><br><span class="pill">${item.status==='completed'?'Terminée':'Prête'}</span></div><div class="score">${item.score==null?'—':`${item.score}/10`}</div><button class="secondary" data-session="${item.id}">Revoir</button></article>`).join(''):'<div class="empty">Aucune séance enregistrée.</div>'}`;bindCommon();view.querySelectorAll('[data-session]').forEach(b=>b.addEventListener('click',()=>showSession(b.dataset.session)));setStatus('')}catch(e){setStatus(e.message,true)}}
+async function showSession(id){setStatus('Chargement…');try{state.today=await api(`/api/sessions/${id}`);renderToday();setStatus('')}catch(e){setStatus(e.message,true)}}
+async function showReview(){setStatus('Chargement…');try{const [mistakes,grammar]=await Promise.all([api('/api/mistakes'),api('/api/grammar')]);view.innerHTML=`<h1 class="section-title">Erreurs & grammaire</h1><p class="section-subtitle">Repérez les notions qui méritent une nouvelle révision.</p><h2>Points de grammaire</h2><div class="grammar-grid">${grammar.length?grammar.map(g=>`<article class="panel"><span class="pill">${g.mistake_count} erreur${g.mistake_count===1?'':'s'} / ${g.attempt_count}</span><h3>${esc(g.title_fr)}</h3><p>${esc(g.explanation_fr)}</p><p lang="zh">${esc(g.explanation_zh)}</p><p class="example">${esc(g.example_fr)} ${speakButton(g.example_fr)}</p></article>`).join(''):'<div class="empty">Terminez une séance pour voir vos statistiques.</div>'}</div><h2>Dernières erreurs</h2>${mistakes.length?mistakes.map(m=>`<article class="panel"><div class="eyebrow">${esc(formatDate(m.study_date))}</div><h3>${esc(m.prompt)}</h3><p class="answer-line bad">Votre réponse : ${esc(m.user_answer||'—')}</p><p class="answer-line good">Réponse : ${esc(m.answer)}</p><p>${esc(m.explanation_fr)}</p><p lang="zh">${esc(m.explanation_zh)}</p></article>`).join(''):'<div class="empty">Aucune erreur enregistrée. Bravo !</div>'}`;bindCommon();setStatus('')}catch(e){setStatus(e.message,true)}}
+async function showVocabulary(){setStatus('Chargement…');try{const words=await api('/api/vocabulary');view.innerHTML=`<h1 class="section-title">Vocabulaire</h1><p class="section-subtitle">Mots des communautés francophones et vocabulaire du quotidien.</p><div class="vocab-grid">${words.map(v=>`<article class="vocab-card"><div class="vocab-head"><div><span class="pill ${v.category}">${v.category==='community'?'Communauté':'Quotidien'}</span><div class="vocab-word">${esc(v.word)}</div><div class="pos">${esc(v.part_of_speech)}</div></div>${speakButton(v.word,'Mot')}</div><p>${esc(v.definition_fr)} · <span class="translation">${esc(v.definition_zh)}</span></p><p class="example">${esc(v.example_fr)} ${speakButton(v.example_fr,'Phrase')}<br><span lang="zh">${esc(v.example_zh)}</span></p>${v.source_name?`<p class="source">Contexte : ${v.source_url?`<a href="${esc(v.source_url)}" target="_blank" rel="noreferrer">${esc(v.source_name)}</a>`:esc(v.source_name)}</p>`:''}</article>`).join('')}</div>`;bindCommon();setStatus('')}catch(e){setStatus(e.message,true)}}
+function formatDate(value){return new Intl.DateTimeFormat('fr-FR',{weekday:'long',day:'numeric',month:'long',year:'numeric',timeZone:'UTC'}).format(new Date(`${value}T12:00:00Z`))}
+function bindCommon(){view.querySelectorAll('[data-speak]').forEach(button=>button.addEventListener('click',()=>speak(button.dataset.speak)));view.querySelectorAll('[data-view]').forEach(button=>button.addEventListener('click',()=>navigate(button.dataset.view)))}
+function navigate(name){state.view=name;document.querySelectorAll('.nav-item').forEach(item=>item.classList.toggle('active',item.dataset.view===name));({today:showToday,history:showHistory,review:showReview,vocabulary:showVocabulary}[name]||showToday)()}
+document.querySelectorAll('.nav-item').forEach(button=>button.addEventListener('click',()=>navigate(button.dataset.view)));
+showToday();
