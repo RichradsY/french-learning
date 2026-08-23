@@ -1,0 +1,21 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+
+# Runtime data
+data/*.db
+data/*.db-*
+logs/
+*.pid
+
+# macOS
+.DS_Store
+
+# Editors
+.vscode/
+.idea/
+
+# Test artifacts
+.coverage
+htmlcov/
