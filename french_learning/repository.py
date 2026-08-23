@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import json
 import sqlite3
+import threading
 from contextlib import contextmanager
 from datetime import datetime
 from pathlib import Path
@@ -16,6 +17,7 @@ class Repository:
     def __init__(self, path):
         self.path = Path(path)
         self.path.parent.mkdir(parents=True, exist_ok=True)
+        self._connection_lock = threading.RLock()
         self.connection = sqlite3.connect(self.path, check_same_thread=False)
         self.connection.row_factory = sqlite3.Row
         self.connection.execute("PRAGMA busy_timeout = 5000")
@@ -62,6 +64,27 @@ class Repository:
             prompt_tokens INTEGER NOT NULL, completion_tokens INTEGER NOT NULL,
             request_count INTEGER NOT NULL DEFAULT 1
         );
+        CREATE TABLE IF NOT EXISTS learning_tasks (
+            id INTEGER PRIMARY KEY, study_date TEXT NOT NULL, task_type TEXT NOT NULL,
+            status TEXT NOT NULL DEFAULT 'ready', title TEXT NOT NULL,
+            content_json TEXT NOT NULL, source_name TEXT, source_url TEXT,
+            content_source TEXT NOT NULL DEFAULT 'offline', generated_at TEXT NOT NULL,
+            started_at TEXT, deadline_at TEXT, submitted_at TEXT, score INTEGER,
+            UNIQUE(study_date, task_type)
+        );
+        CREATE TABLE IF NOT EXISTS task_submissions (
+            id INTEGER PRIMARY KEY, task_id INTEGER NOT NULL REFERENCES learning_tasks(id) ON DELETE CASCADE,
+            answer_text TEXT NOT NULL, feedback_json TEXT NOT NULL,
+            submitted_at TEXT NOT NULL, score INTEGER NOT NULL,
+            UNIQUE(task_id)
+        );
+        CREATE TABLE IF NOT EXISTS writing_errors (
+            id INTEGER PRIMARY KEY,
+            submission_id INTEGER NOT NULL REFERENCES task_submissions(id) ON DELETE CASCADE,
+            grammar_key TEXT NOT NULL REFERENCES grammar_points(grammar_key),
+            original_text TEXT NOT NULL, correction TEXT NOT NULL,
+            explanation_fr TEXT NOT NULL, explanation_zh TEXT NOT NULL
+        );
         """)
         columns = {row[1] for row in self.connection.execute("PRAGMA table_info(daily_sessions)")}
         if "content_source" not in columns:
@@ -70,6 +93,11 @@ class Repository:
         if "request_count" not in usage_columns:
             self.connection.execute("ALTER TABLE api_usage ADD COLUMN request_count INTEGER NOT NULL DEFAULT 1")
             self.connection.execute("UPDATE api_usage SET request_count = 2")
+        task_columns = {row[1] for row in self.connection.execute("PRAGMA table_info(learning_tasks)")}
+        if "started_at" not in task_columns:
+            self.connection.execute("ALTER TABLE learning_tasks ADD COLUMN started_at TEXT")
+        if "deadline_at" not in task_columns:
+            self.connection.execute("ALTER TABLE learning_tasks ADD COLUMN deadline_at TEXT")
         self.connection.executemany(
             "INSERT OR IGNORE INTO grammar_points VALUES (?, ?, ?, ?, ?)",
             [(key, *value) for key, value in GRAMMAR.items()],
@@ -156,28 +184,30 @@ class Repository:
 
     def reserve_api_usage(self, model, request_count=2):
         now = datetime.now().astimezone().isoformat(timespec="seconds")
-        with self.connection:
-            cursor = self.connection.execute(
-                """INSERT INTO api_usage(
-                    used_at, model, prompt_tokens, completion_tokens, request_count
-                ) VALUES (?, ?, 0, 0, ?)""",
-                (now, model, request_count),
-            )
+        with self._connection_lock:
+            with self.connection:
+                cursor = self.connection.execute(
+                    """INSERT INTO api_usage(
+                        used_at, model, prompt_tokens, completion_tokens, request_count
+                    ) VALUES (?, ?, 0, 0, ?)""",
+                    (now, model, request_count),
+                )
         return cursor.lastrowid
 
     def finalize_api_usage(self, usage_id, usage):
-        with self.connection:
-            self.connection.execute(
-                """UPDATE api_usage
-                   SET model = ?, prompt_tokens = ?, completion_tokens = ?
-                   WHERE id = ?""",
-                (
-                    usage["model"],
-                    usage["prompt_tokens"],
-                    usage["completion_tokens"],
-                    usage_id,
-                ),
-            )
+        with self._connection_lock:
+            with self.connection:
+                self.connection.execute(
+                    """UPDATE api_usage
+                       SET model = ?, prompt_tokens = ?, completion_tokens = ?
+                       WHERE id = ?""",
+                    (
+                        usage["model"],
+                        usage["prompt_tokens"],
+                        usage["completion_tokens"],
+                        usage_id,
+                    ),
+                )
 
     def session_id_for_date(self, study_date):
         row = self.connection.execute("SELECT id FROM daily_sessions WHERE study_date = ?", (study_date,)).fetchone()
@@ -250,6 +280,162 @@ class Repository:
             )
         return score
 
+    def create_learning_tasks(self, study_date, reading, writing, content_source="offline"):
+        now = datetime.now().astimezone().isoformat(timespec="seconds")
+        rows = [
+            (
+                study_date,
+                "reading",
+                reading["title"],
+                json.dumps(reading, ensure_ascii=False),
+                reading.get("source_name"),
+                reading.get("source_url"),
+                content_source,
+                now,
+            ),
+            (
+                study_date,
+                "writing",
+                writing["title"],
+                json.dumps(writing, ensure_ascii=False),
+                None,
+                None,
+                content_source,
+                now,
+            ),
+        ]
+        with self.connection:
+            self.connection.executemany(
+                """INSERT OR IGNORE INTO learning_tasks(
+                    study_date, task_type, title, content_json, source_name, source_url,
+                    content_source, generated_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)""",
+                rows,
+            )
+
+    def get_learning_task(self, study_date, task_type):
+        row = self.connection.execute(
+            "SELECT * FROM learning_tasks WHERE study_date = ? AND task_type = ?",
+            (study_date, task_type),
+        ).fetchone()
+        return self._task_from_row(row) if row else None
+
+    def get_learning_task_by_id(self, task_id):
+        row = self.connection.execute(
+            "SELECT * FROM learning_tasks WHERE id = ?", (task_id,)
+        ).fetchone()
+        return self._task_from_row(row) if row else None
+
+    def _task_from_row(self, row):
+        task = dict(row)
+        task["content"] = json.loads(task.pop("content_json"))
+        submission = self.connection.execute(
+            "SELECT * FROM task_submissions WHERE task_id = ?", (task["id"],)
+        ).fetchone()
+        if submission:
+            task["submission"] = dict(submission)
+            task["submission"]["feedback"] = json.loads(
+                task["submission"].pop("feedback_json")
+            )
+        return task
+
+    def start_reading(self, task_id, started_at, deadline_at):
+        with self._connection_lock:
+            with self.connection:
+                cursor = self.connection.execute(
+                    """UPDATE learning_tasks
+                       SET status = 'in_progress', started_at = ?, deadline_at = ?
+                       WHERE id = ? AND task_type = 'reading' AND status = 'ready'""",
+                    (started_at, deadline_at, task_id),
+                )
+        return cursor.rowcount == 1
+
+    def submit_reading(self, task_id, answers, graded, timed_out=False):
+        now = datetime.now().astimezone().isoformat(timespec="seconds")
+        score = sum(item["is_correct"] for item in graded)
+        feedback = {"answers": answers, "questions": graded, "timed_out": bool(timed_out)}
+        with self._connection_lock:
+            with self.connection:
+                claimed = self.connection.execute(
+                    "UPDATE learning_tasks SET status = 'grading' WHERE id = ? AND task_type = 'reading' AND status = 'in_progress'",
+                    (task_id,),
+                )
+                if claimed.rowcount != 1:
+                    return None
+                self.connection.execute(
+                    "INSERT INTO task_submissions(task_id, answer_text, feedback_json, submitted_at, score) VALUES (?, '', ?, ?, ?)",
+                    (task_id, json.dumps(feedback, ensure_ascii=False), now, score),
+                )
+                self.connection.execute(
+                    "UPDATE learning_tasks SET status = 'completed', submitted_at = ?, score = ? WHERE id = ?",
+                    (now, score, task_id),
+                )
+        return score
+
+    def submit_writing(self, task_id, answer_text, feedback):
+        now = datetime.now().astimezone().isoformat(timespec="seconds")
+        score = feedback["score_total"]
+        with self.connection:
+            current = self.connection.execute(
+                "SELECT status FROM learning_tasks WHERE id = ? AND task_type = 'writing'",
+                (task_id,),
+            ).fetchone()
+            if not current or current["status"] != "grading":
+                return None
+            cursor = self.connection.execute(
+                "INSERT INTO task_submissions(task_id, answer_text, feedback_json, submitted_at, score) VALUES (?, ?, ?, ?, ?)",
+                (task_id, answer_text, json.dumps(feedback, ensure_ascii=False), now, score),
+            )
+            self.connection.executemany(
+                """INSERT INTO writing_errors(
+                    submission_id, grammar_key, original_text, correction,
+                    explanation_fr, explanation_zh
+                ) VALUES (?, ?, ?, ?, ?, ?)""",
+                [
+                    (
+                        cursor.lastrowid,
+                        item["grammar_key"],
+                        item["original"],
+                        item["correction"],
+                        item["explanation_fr"],
+                        item["explanation_zh"],
+                    )
+                    for item in feedback["errors"]
+                ],
+            )
+            self.connection.execute(
+                "UPDATE learning_tasks SET status = 'completed', submitted_at = ?, score = ? WHERE id = ?",
+                (now, score, task_id),
+            )
+        return score
+
+    def claim_writing_task(self, task_id):
+        with self._connection_lock:
+            with self.connection:
+                cursor = self.connection.execute(
+                    "UPDATE learning_tasks SET status = 'grading' WHERE id = ? AND task_type = 'writing' AND status = 'ready'",
+                    (task_id,),
+                )
+        return cursor.rowcount == 1
+
+    def release_writing_task(self, task_id):
+        with self._connection_lock:
+            with self.connection:
+                self.connection.execute(
+                    "UPDATE learning_tasks SET status = 'ready' WHERE id = ? AND task_type = 'writing' AND status = 'grading'",
+                    (task_id,),
+                )
+
+    def task_history(self):
+        return [
+            dict(row)
+            for row in self.connection.execute(
+                """SELECT id, study_date, task_type, status, title, score,
+                          submitted_at, content_source
+                   FROM learning_tasks ORDER BY study_date DESC, task_type"""
+            )
+        ]
+
     def history(self):
         return [dict(row) for row in self.connection.execute("SELECT * FROM daily_sessions ORDER BY study_date DESC")]
 
@@ -267,15 +453,35 @@ class Repository:
             item["options"] = json.loads(item.pop("options_json"))
             item["option_explanations"] = json.loads(item.pop("option_explanations_json"))
             items.append(item)
+        for row in self.connection.execute("""
+            SELECT -we.id AS id, we.original_text AS prompt, we.correction AS answer,
+                   we.explanation_fr, we.explanation_zh, we.grammar_key,
+                   'writing' AS kind, we.original_text AS user_answer, lt.study_date
+            FROM writing_errors we
+            JOIN task_submissions ts ON ts.id = we.submission_id
+            JOIN learning_tasks lt ON lt.id = ts.task_id
+            ORDER BY lt.study_date DESC, we.id
+        """):
+            item = dict(row)
+            item["options"] = []
+            item["option_explanations"] = {}
+            items.append(item)
         return items
 
     def grammar_summary(self):
         return [dict(row) for row in self.connection.execute("""
-            SELECT g.*, COUNT(CASE WHEN r.is_correct = 0 THEN 1 END) AS mistake_count,
-                   COUNT(r.id) AS attempt_count
+            SELECT g.*,
+                   COUNT(CASE WHEN r.is_correct = 0 THEN 1 END)
+                     + (SELECT COUNT(*) FROM writing_errors we WHERE we.grammar_key = g.grammar_key)
+                     AS mistake_count,
+                   COUNT(r.id)
+                     + (SELECT COUNT(*) FROM writing_errors we WHERE we.grammar_key = g.grammar_key)
+                     AS attempt_count
             FROM grammar_points g LEFT JOIN questions q ON q.grammar_key = g.grammar_key
             LEFT JOIN responses r ON r.question_id = q.id
-            GROUP BY g.grammar_key HAVING COUNT(r.id) > 0
+            GROUP BY g.grammar_key
+            HAVING COUNT(r.id) > 0
+                OR (SELECT COUNT(*) FROM writing_errors we WHERE we.grammar_key = g.grammar_key) > 0
             ORDER BY mistake_count DESC, g.title_fr
         """)]
 

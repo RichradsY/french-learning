@@ -12,12 +12,7 @@ def _mcq(prompt, options, answer, grammar_key, fr, zh, reasons):
         "accepted": [answer], "grammar_key": grammar_key,
         "explanation_fr": fr, "explanation_zh": zh,
         "option_explanations": {
-            option: f"{reasons[index]} " + (
-                "正确：该选项符合本句的语法与语义。"
-                if option == answer
-                else "不正确：请根据前述法语说明辨别其时态、句法或语义问题。"
-            )
-            for index, option in enumerate(options)
+            option: reasons[index] for index, option in enumerate(options)
         },
     }
 

@@ -8,11 +8,14 @@ Application locale de pratique quotidienne du français avec correction, histori
 - questions et options uniquement en français ;
 - correction avec explications en français et en chinois pour tous les choix ;
 - 5 mots issus de contextes communautaires + 5 mots du quotidien ;
+- une lecture B2 quotidienne adaptée d'une source RSS vérifiable, masquée avant confirmation, puis limitée à 8 minutes avec reprise du compte à rebours, remise anticipée et envoi automatique à échéance ;
+- un sujet d'écriture B1–B2 avec compteur de mots, correction Mistral détaillée, barème strict sur 20 (quatre dimensions sur 5), erreurs réinjectées dans la révision, version corrigée, deux réponses modèles B2/C2 préparées avec le sujet, deux autres sur le thème choisi par l'apprenant, aide lexicale chinoise et conseils d'optimisation ;
+- historique typé distinguant les 10 questions, la lecture et l'écriture ;
 - historique SQLite, erreurs et statistiques par point de grammaire ;
-- lecture `fr-FR` des mots, exemples et questions via le navigateur ;
+- lecture locale hors ligne avec la voix macOS `Thomas (fr-FR)` : mots et exemples à la demande, phrases des exercices uniquement après publication de la correction ;
 - préparation automatique quotidienne à 07:00 ;
 - génération Mistral optionnelle avec double contrôle, sources communautaires récentes et repli hors ligne ;
-- aucune dépendance Python externe ; seules les données publiques RSS et le prompt pédagogique sont envoyés à Mistral.
+- aucune dépendance Python externe ; les données RSS et prompts pédagogiques sont envoyés à Mistral lors de la préparation, et le texte de l'apprenant uniquement lorsqu'il demande explicitement une correction d'écriture.
 
 ## Génération Mistral sécurisée
 
@@ -22,9 +25,11 @@ La clé n'est jamais stockée dans le projet, la base, les logs ou les LaunchAge
 security add-generic-password -U -a "$USER" -s "french-learning-mistral-api-key" -w
 ```
 
-Le système utilise `mistral-medium-latest` pour générer les textes à compléter et le vocabulaire récent, puis effectue une seconde passe de contrôle pédagogique. Les QCM proviennent toujours de la banque humaine contrôlée et suivent une rotation “jamais vu / moins récemment vu”, car une relecture LLM seule ne garantit pas l'absence de distracteurs sémantiquement interchangeables. Les structures sont ensuite validées localement : quantité, langue, réponses, explications bilingues, catégories et sources. En cas d'échec réseau ou de validation, toute la séance utilise la banque contrôlée hors ligne.
+Le système utilise `mistral-medium-latest` pour générer les textes à compléter, le vocabulaire récent, une synthèse de lecture B2 et un sujet d'écriture, puis effectue une seconde passe de contrôle pédagogique. Les QCM quotidiens proviennent toujours de la banque humaine contrôlée. La lecture conserve une URL issue du RSS, est présentée comme une synthèse pédagogique adaptée et possède exactement quatre questions validées localement. En cas d'échec réseau ou de validation, toute la journée utilise les banques contrôlées hors ligne.
 
-Une séance est générée une seule fois puis mise en cache. Avant chaque tentative en ligne, le garde-fou réserve deux créneaux de requête et les conserve même si la génération ou l'audit échoue ; un échec ne peut donc pas contourner le budget. Le plafond est de 70 créneaux par mois, soit au plus 35 tentatives quotidiennes à deux requêtes (génération puis audit). Une génération contrôlée observée pendant l'installation a consommé environ 16 000 tokens au total ; au tarif officiel constaté en août 2026, l'ordre de grandeur mensuel reste très inférieur au crédit de 12 €, mais les tarifs peuvent changer.
+Une journée est générée une seule fois puis mise en cache. La préparation quotidienne réserve deux créneaux même si elle échoue. Chaque production écrite permet une seule correction finale et réserve un créneau avant l'appel ; un échec reste comptabilisé mais remet la tâche à l'état prêt afin de permettre une relance consciente. Le plafond commun est de 105 requêtes par mois : jusqu'à 62 pour 31 préparations quotidiennes, 31 corrections d'écriture et 12 créneaux de marge. Les tarifs Mistral peuvent évoluer ; le coût réel reste donc contrôlé par ce plafond dur et l'historique local d'usage, pas par une estimation figée.
+
+La lecture suit un état serveur `ready → in_progress → completed`. Avant le démarrage, l'API ne transmet ni article ni questions. Après confirmation, le serveur fixe une échéance immuable de 8 minutes ; le navigateur affiche le temps restant à partir de cette échéance, conserve localement les choix en cas de rafraîchissement et envoie les réponses à 00:00. Une remise manuelle partielle est permise ; toute question vide est incorrecte. Si le navigateur est fermé, le serveur clôt l'exercice à la prochaine consultation, sans prolonger le temps.
 
 ## Démarrage immédiat
 

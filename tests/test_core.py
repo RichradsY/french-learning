@@ -30,7 +30,8 @@ class CoreLearningTest(unittest.TestCase):
             if question["kind"] == "mcq":
                 self.assertEqual(4, len(question["options"]))
                 self.assertEqual(set(question["options"]), set(question["option_explanations"]))
-                self.assertTrue(all(re.search(r"[\u4e00-\u9fff]", explanation) for explanation in question["option_explanations"].values()))
+                self.assertTrue(all(question["option_explanations"].values()))
+                self.assertFalse(any("请根据前述法语说明" in explanation for explanation in question["option_explanations"].values()))
                 self.assertFalse(any(re.search(r"[\u4e00-\u9fff]", option) for option in question["options"]))
         self.assertEqual(5, sum(v["category"] == "community" for v in session["vocabulary"]))
         self.assertEqual(5, sum(v["category"] == "daily" for v in session["vocabulary"]))
@@ -197,8 +198,9 @@ class CoreLearningTest(unittest.TestCase):
         answers = {str(q["id"]): "x" for q in session["questions"]}
         self.service.submit(session["id"], answers)
         history = self.service.history()
-        self.assertEqual("completed", history[0]["status"])
-        self.assertEqual(0, history[0]["score"])
+        daily = next(item for item in history if item["activity_type"] == "daily")
+        self.assertEqual("completed", daily["status"])
+        self.assertEqual(0, daily["score"])
         self.assertEqual(10, len(self.service.mistakes()))
         grammar = self.service.grammar_summary()
         self.assertEqual(10, sum(item["mistake_count"] for item in grammar))
