@@ -4,6 +4,10 @@ Mon français Coach is a local-first web application for structured daily French
 
 The application works fully offline with its reviewed content banks. Learners who want fresh AI-generated material and detailed writing feedback can connect their own Mistral API key. The key stays outside the repository and learning database, and the server only accepts loopback connections.
 
+**[▶ Open the interactive Live Demo](https://richradsy.github.io/mon-francais-coach/)**
+
+The hosted demo uses sample data and browser-only simulation. It never asks for an API key, stores no learning account, and does not run the Python, SQLite, scheduling, or Mistral backend. Clone the repository for the complete private local application.
+
 ## Highlights
 
 - 10 daily grammar exercises: 5 multiple-choice questions and 5 fill-in-the-blank questions;
@@ -29,6 +33,8 @@ python3 -m french_learning serve --offline
 Open http://127.0.0.1:8765. The offline mode requires no API key.
 
 ## Preview
+
+Explore all six sections in the **[Live Demo](https://richradsy.github.io/mon-francais-coach/)**, or preview selected screens below.
 
 | Vocabulary calendar | Writing feedback |
 |---|---|

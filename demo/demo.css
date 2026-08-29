@@ -1,0 +1,55 @@
+.demo-banner {
+  align-items: center;
+  background: #fff4d6;
+  border-bottom: 1px solid #e8c66b;
+  color: #183153;
+  display: flex;
+  font-size: 14px;
+  gap: 14px;
+  justify-content: center;
+  min-height: 38px;
+  padding: 7px 20px;
+  text-align: center;
+}
+
+.demo-banner strong {
+  background: #e9a51c;
+  border-radius: 999px;
+  color: #102642;
+  font-size: 12px;
+  letter-spacing: .08em;
+  padding: 4px 9px;
+  text-transform: uppercase;
+}
+
+.demo-banner a {
+  color: #125a96;
+  font-weight: 700;
+}
+
+.demo-banner span {
+  min-width: 0;
+}
+
+.demo-toast {
+  background: #e9f4ff;
+  border: 1px solid #9dc4e4;
+  border-radius: 10px;
+  color: #183153;
+  margin: 0 auto 18px;
+  max-width: 1120px;
+  padding: 10px 14px;
+}
+
+@media (max-width: 760px) {
+  .demo-banner {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 4px;
+    padding: 8px 14px;
+  }
+
+  .demo-banner span {
+    width: 100%;
+  }
+}

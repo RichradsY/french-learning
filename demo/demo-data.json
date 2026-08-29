@@ -1,0 +1,2619 @@
+{
+  "daily": {
+    "id": 7,
+    "study_date": "2026-08-28",
+    "status": "completed",
+    "generated_at": "2026-08-28T07:27:36+02:00",
+    "submitted_at": "2026-08-28T14:04:48+02:00",
+    "score": 4,
+    "content_source": "offline",
+    "started_at": "2026-08-28T13:59:55+02:00",
+    "question_deadline_at": null,
+    "current_position": 10,
+    "question_count": 10,
+    "estimated_seconds": 475,
+    "questions": [
+      {
+        "id": 61,
+        "position": 1,
+        "kind": "mcq",
+        "prompt": "N'eût été son intervention, le désaccord se serait prolongé.",
+        "answer": "Sans son intervention",
+        "explanation_fr": "« N'eût été » exprime une condition passée irréelle et signifie ici « sans ».",
+        "explanation_zh": "n'eût été 是正式的过去非现实条件表达，相当于“若不是……”。\n词汇与用法：si + 愈过去时，主句用过去条件式，表达未实现的过去。",
+        "grammar_key": "hypothese-passee",
+        "content_hash": "08b215686f94b2ab7e8e8f40faa76ec03507d128979a2087dabd9791cac6ef48",
+        "options": [
+          "Malgré son accord",
+          "Sans son intervention",
+          "Après son intervention",
+          "Grâce à son absence"
+        ],
+        "option_explanations": {
+          "Sans son intervention": "Reformulation correcte de la condition irréelle.",
+          "Grâce à son absence": "Le sens causal est inversé.",
+          "Après son intervention": "La simple succession temporelle ne suffit pas.",
+          "Malgré son accord": "Cette concession change le sens."
+        },
+        "user_answer": "Grâce à son absence",
+        "is_correct": false,
+        "timed_out": false
+      },
+      {
+        "id": 62,
+        "position": 2,
+        "kind": "mcq",
+        "prompt": "L'équipe s'est engagée à ce que chaque demande ___ sous quarante-huit heures.",
+        "answer": "soit traitée",
+        "explanation_fr": "« S'engager à ce que » demande le subjonctif, ici à la voix passive.",
+        "explanation_zh": "s'engager à ce que 后接虚拟式；demande 是被处理的对象，使用 soit traitée。\n词汇与用法：必要、怀疑、愿望和部分让步连词后常用虚拟式。",
+        "grammar_key": "subjonctif",
+        "content_hash": "612e897a3345986ce2dda11cad8caac3e337c531c83b4cd4e7dbd93c7010fff0",
+        "options": [
+          "est traitée",
+          "sera traitée",
+          "soit traitée",
+          "serait traitée"
+        ],
+        "option_explanations": {
+          "soit traitée": "Subjonctif passif correct.",
+          "est traitée": "Indicatif présent incorrect après cette locution.",
+          "sera traitée": "Futur simple non attendu dans la subordonnée.",
+          "serait traitée": "Conditionnel sans valeur ici."
+        },
+        "user_answer": "serait traitée",
+        "is_correct": false,
+        "timed_out": false
+      },
+      {
+        "id": 63,
+        "position": 3,
+        "kind": "mcq",
+        "prompt": "Plus les délais raccourcissent, plus la coordination ___ essentielle.",
+        "answer": "devient",
+        "explanation_fr": "La structure corrélative « plus..., plus... » prend ici l'indicatif présent.",
+        "explanation_zh": "plus… plus… 表示“越……越……”；描述一般变化时使用直陈式现在时。\n词汇与用法：bon 的形容词比较级是 meilleur；mieux 是副词 bien 的比较级。",
+        "grammar_key": "comparatif",
+        "content_hash": "de6ba8961e97d9e70be7d4b4ba0e51615755611712c7de254a2a093d342c98bf",
+        "options": [
+          "devient",
+          "deviendrait",
+          "devenue",
+          "devenir"
+        ],
+        "option_explanations": {
+          "devient": "Indicatif présent correct.",
+          "deviendrait": "Le conditionnel ajouterait une hypothèse absente.",
+          "devenue": "Le participe ne forme pas le verbe.",
+          "devenir": "L'infinitif ne peut être le noyau de la proposition."
+        },
+        "user_answer": "devenue",
+        "is_correct": false,
+        "timed_out": false
+      },
+      {
+        "id": 64,
+        "position": 4,
+        "kind": "mcq",
+        "prompt": "Ce dossier mérite d'___ examiné plus attentivement.",
+        "answer": "être",
+        "explanation_fr": "« Mériter de » est suivi de l'infinitif passif « être examiné ».",
+        "explanation_zh": "mériter de 后接不定式；dossier 是被审查的对象，因此使用被动式 être examiné。\n词汇与用法：过去分词可表达被动并发生性数配合；现在分词通常表达主动。",
+        "grammar_key": "participes",
+        "content_hash": "8b50f6186ded4791bbaac021b7590633d34e0f02fea74276bcaa7bd7135894d5",
+        "options": [
+          "étant",
+          "avoir",
+          "été",
+          "être"
+        ],
+        "option_explanations": {
+          "être": "Infinitif passif correct.",
+          "avoir": "« avoir examiné » aurait un sens actif.",
+          "été": "Le participe passé seul ne convient pas.",
+          "étant": "Le participe présent ne complète pas « mérite de »."
+        },
+        "user_answer": "étant",
+        "is_correct": false,
+        "timed_out": false
+      },
+      {
+        "id": 65,
+        "position": 5,
+        "kind": "mcq",
+        "prompt": "À supposer que cette piste ___, quelles seraient les conséquences ?",
+        "answer": "soit retenue",
+        "explanation_fr": "« À supposer que » introduit une hypothèse et commande le subjonctif.",
+        "explanation_zh": "à supposer que 表示假设，后接虚拟式 soit retenue。\n词汇与用法：必要、怀疑、愿望和部分让步连词后常用虚拟式。",
+        "grammar_key": "subjonctif",
+        "content_hash": "4c02639e5fe13f32ae126eed2a06347b9f1c10df22b41fd59605baaa3b0c0daa",
+        "options": [
+          "est retenue",
+          "sera retenue",
+          "soit retenue",
+          "serait retenue"
+        ],
+        "option_explanations": {
+          "soit retenue": "Subjonctif passif correct.",
+          "est retenue": "Indicatif trop affirmatif.",
+          "sera retenue": "Futur incorrect après la locution.",
+          "serait retenue": "Conditionnel non attendu dans la subordonnée."
+        },
+        "user_answer": "soit retenue",
+        "is_correct": true,
+        "timed_out": false
+      },
+      {
+        "id": 66,
+        "position": 6,
+        "kind": "fill",
+        "prompt": "C'est en ___ régulièrement que l'on progresse. (pratiquer)",
+        "answer": "pratiquant",
+        "explanation_fr": "« C'est en + gérondif que » met en relief le moyen employé.",
+        "explanation_zh": "c'est en + 现在分词 que 强调实现结果的方式。\n词汇与用法：c'est… que/qui 和 ce dont… c'est… 用来突出信息焦点。",
+        "grammar_key": "mise-en-relief",
+        "content_hash": "4cbe0ce0276304020c6d4eed0b6538af16be288462deda61794a78bf9e815ee3",
+        "options": [],
+        "option_explanations": {},
+        "user_answer": "pratiquant",
+        "is_correct": true,
+        "timed_out": false
+      },
+      {
+        "id": 67,
+        "position": 7,
+        "kind": "fill",
+        "prompt": "___ les contraintes, l'équipe a livré le projet à temps.",
+        "answer": "Malgré",
+        "explanation_fr": "« Malgré » introduit un nom et exprime une concession.",
+        "explanation_zh": "malgré + 名词表示“尽管……”。\n词汇与用法：malgré/en dépit de 后接名词；bien que/quoique 后接虚拟式。",
+        "grammar_key": "concession",
+        "content_hash": "422b45fbbc88f420d689052a66131880c6291587631dc666684a62a3380dc88b",
+        "options": [],
+        "option_explanations": {},
+        "user_answer": "Puisque",
+        "is_correct": false,
+        "timed_out": false
+      },
+      {
+        "id": 68,
+        "position": 8,
+        "kind": "fill",
+        "prompt": "Il est parti tôt ___ éviter les embouteillages.",
+        "answer": "pour",
+        "explanation_fr": "« Pour + infinitif » exprime le but lorsque le sujet est le même.",
+        "explanation_zh": "同一主语时用 pour + 不定式表达目的。\n词汇与用法：同一主语用 pour/afin de；不同主语用 pour que/afin que + 虚拟式。",
+        "grammar_key": "but",
+        "content_hash": "1687df28e3046dd28208e6999af9b5a693c18bcf66fe8804543ec45da1ccc6fd",
+        "options": [],
+        "option_explanations": {},
+        "user_answer": "pour",
+        "is_correct": true,
+        "timed_out": false
+      },
+      {
+        "id": 69,
+        "position": 9,
+        "kind": "fill",
+        "prompt": "Il parle de cette période comme s'il l'___ lui-même. (vivre)",
+        "answer": "avait vécue",
+        "explanation_fr": "« Comme si » introduit l'irréel du passé et le participe s'accorde avec « l' ».",
+        "explanation_zh": "comme si 后用愈过去时；l' 指阴性 période，因此 vécue 要配合。\n词汇与用法：愈过去时表示“过去的过去”，常与 comme si 或叙事先后关系连用。",
+        "grammar_key": "plus-que-parfait",
+        "content_hash": "80921c965e6100b9f9cd03f2699b1855f634322d5ebf492a7f9044fb4cbee400",
+        "options": [],
+        "option_explanations": {},
+        "user_answer": "vivrait",
+        "is_correct": false,
+        "timed_out": false
+      },
+      {
+        "id": 70,
+        "position": 10,
+        "kind": "fill",
+        "prompt": "Si vous étiez disponible, nous ___ en discuter demain. (pouvoir)",
+        "answer": "pourrions",
+        "explanation_fr": "La conséquence de « si + imparfait » se met au conditionnel présent.",
+        "explanation_zh": "si + 未完成过去时的结果句用条件式现在时。\n词汇与用法：si + 未完成过去时搭配条件式现在时，表达与当前事实相反的假设。",
+        "grammar_key": "conditionnel",
+        "content_hash": "ad16240100ba86990700ff8fd7ec4b99ce903c09f4819293aed6f6746c4f1b60",
+        "options": [],
+        "option_explanations": {},
+        "user_answer": "pourrions",
+        "is_correct": true,
+        "timed_out": false
+      }
+    ],
+    "vocabulary": [
+      {
+        "id": 61,
+        "category": "community",
+        "word": "recyclerie",
+        "part_of_speech": "nom féminin",
+        "definition_fr": "lieu où des objets sont récupérés et réemployés",
+        "definition_zh": "再利用中心",
+        "example_fr": "La recyclerie remet en état des meubles donnés par les habitants.",
+        "example_zh": "再利用中心修复居民捐赠的家具。",
+        "source_name": "Réemploi",
+        "source_url": "https://www.ecologie.gouv.fr/"
+      },
+      {
+        "id": 62,
+        "category": "community",
+        "word": "accessibilité",
+        "part_of_speech": "nom féminin",
+        "definition_fr": "possibilité d'accéder facilement à un lieu ou service",
+        "definition_zh": "无障碍；可及性",
+        "example_fr": "L'accessibilité du bâtiment sera améliorée cette année.",
+        "example_zh": "今年将改善建筑的无障碍条件。",
+        "source_name": "Services publics",
+        "source_url": "https://www.service-public.fr/"
+      },
+      {
+        "id": 63,
+        "category": "community",
+        "word": "collecte",
+        "part_of_speech": "nom féminin",
+        "definition_fr": "ramassage organisé de dons ou de déchets",
+        "definition_zh": "收集；募捐",
+        "example_fr": "Une collecte de vêtements aura lieu devant la mairie.",
+        "example_zh": "市政府门前将举行衣物募集。",
+        "source_name": "Solidarité",
+        "source_url": "https://www.service-public.fr/"
+      },
+      {
+        "id": 64,
+        "category": "community",
+        "word": "covoiturage",
+        "part_of_speech": "nom masculin",
+        "definition_fr": "partage d'un trajet en voiture",
+        "definition_zh": "拼车",
+        "example_fr": "Le covoiturage facilite les déplacements depuis les villages voisins.",
+        "example_zh": "拼车方便了周边村庄的出行。",
+        "source_name": "Mobilités",
+        "source_url": "https://www.ecologie.gouv.fr/"
+      },
+      {
+        "id": 65,
+        "category": "community",
+        "word": "compostage",
+        "part_of_speech": "nom masculin",
+        "definition_fr": "transformation des déchets organiques en compost",
+        "definition_zh": "堆肥",
+        "example_fr": "Le compostage collectif diminue le volume des poubelles.",
+        "example_zh": "集体堆肥可减少垃圾量。",
+        "source_name": "Déchets",
+        "source_url": "https://www.ecologie.gouv.fr/"
+      },
+      {
+        "id": 66,
+        "category": "daily",
+        "word": "profiter",
+        "part_of_speech": "verbe",
+        "definition_fr": "tirer avantage d'une situation",
+        "definition_zh": "利用；享受",
+        "example_fr": "Profitons du soleil pour marcher.",
+        "example_zh": "趁着阳光好，我们去散步吧。",
+        "source_name": null,
+        "source_url": null
+      },
+      {
+        "id": 67,
+        "category": "daily",
+        "word": "conseiller",
+        "part_of_speech": "verbe",
+        "definition_fr": "recommander une action",
+        "definition_zh": "建议",
+        "example_fr": "Le médecin lui conseille de se reposer.",
+        "example_zh": "医生建议他休息。",
+        "source_name": null,
+        "source_url": null
+      },
+      {
+        "id": 68,
+        "category": "daily",
+        "word": "disponible",
+        "part_of_speech": "adjectif",
+        "definition_fr": "libre ou prêt à être utilisé",
+        "definition_zh": "有空的；可用的",
+        "example_fr": "Cette salle est disponible après quinze heures.",
+        "example_zh": "这个房间下午三点后可用。",
+        "source_name": null,
+        "source_url": null
+      },
+      {
+        "id": 69,
+        "category": "daily",
+        "word": "prévoir",
+        "part_of_speech": "verbe",
+        "definition_fr": "organiser à l'avance",
+        "definition_zh": "预先安排",
+        "example_fr": "Nous prévoyons une solution en cas de pluie.",
+        "example_zh": "我们预先准备了下雨时的方案。",
+        "source_name": null,
+        "source_url": null
+      },
+      {
+        "id": 70,
+        "category": "daily",
+        "word": "permettre",
+        "part_of_speech": "verbe",
+        "definition_fr": "rendre une action possible",
+        "definition_zh": "使能够；允许",
+        "example_fr": "Ce raccourci permet de gagner du temps.",
+        "example_zh": "这条捷径可以节省时间。",
+        "source_name": null,
+        "source_url": null
+      }
+    ]
+  },
+  "reading": {
+    "id": 11,
+    "study_date": "2026-08-27",
+    "task_type": "reading",
+    "status": "completed",
+    "title": "Les bibliothèques d'objets favorisent le partage du matériel",
+    "source_name": "Contenu hors ligne contrôlé",
+    "source_url": null,
+    "content_source": "offline",
+    "generated_at": "2026-08-27T07:00:59+02:00",
+    "submitted_at": "2026-08-27T16:48:11+02:00",
+    "score": 4,
+    "started_at": "2026-08-27T16:41:50+02:00",
+    "deadline_at": "2026-08-27T16:49:50+02:00",
+    "grading_started_at": null,
+    "content": {
+      "title": "Les bibliothèques d'objets favorisent le partage du matériel",
+      "article_fr": "Une perceuse, une machine à coudre ou un appareil de nettoyage reste souvent inutilisé pendant la majeure partie de l'année. Pour éviter que chaque foyer achète le même équipement, des associations créent des bibliothèques d'objets accessibles avec une adhésion modeste. Le fonctionnement ressemble à celui d'une bibliothèque classique : les membres réservent un objet, l'empruntent pour quelques jours puis le rapportent. Avant chaque prêt, un bénévole vérifie son état et explique les principales règles de sécurité. Certains lieux organisent également des ateliers afin que les utilisateurs apprennent à manipuler correctement les outils. Le partage réduit les dépenses individuelles et limite la fabrication d'appareils rarement employés. Il permet aussi de tester un équipement avant de décider si un achat personnel est réellement nécessaire. Cette organisation demande néanmoins un inventaire précis, un espace de stockage et du temps pour entretenir le matériel. Lorsqu'un objet revient en retard ou abîmé, les membres suivants ne peuvent plus respecter leur propre projet. Les associations établissent donc des règles claires et demandent parfois une caution pour les appareils coûteux. Elles suivent surtout le nombre de prêts et la fréquence des réparations afin de choisir les objets les plus utiles. Au-delà de l'économie réalisée, ces lieux créent une culture de responsabilité partagée autour de biens utilisés collectivement.",
+      "source_name": "Contenu hors ligne contrôlé",
+      "source_url": null,
+      "time_limit_seconds": 480,
+      "questions": [
+        {
+          "prompt": "Quel problème les bibliothèques d'objets cherchent-elles à résoudre ?",
+          "options": [
+            "La fermeture des magasins de vêtements",
+            "L'absence de transports publics",
+            "L'achat individuel de matériel peu utilisé",
+            "Le manque de livres dans les quartiers"
+          ],
+          "answer": "L'achat individuel de matériel peu utilisé",
+          "explanation_fr": "Le texte part du constat que beaucoup d'appareils servent rarement.",
+          "explanation_zh": "文章指出许多设备很少使用，却被每户分别购买。"
+        },
+        {
+          "prompt": "Que se passe-t-il avant chaque prêt ?",
+          "options": [
+            "L'association supprime sa fiche d'inventaire",
+            "Un bénévole contrôle l'objet et rappelle la sécurité",
+            "L'objet est vendu au membre",
+            "Le membre doit réparer un autre appareil"
+          ],
+          "answer": "Un bénévole contrôle l'objet et rappelle la sécurité",
+          "explanation_fr": "Le contrôle et les explications précèdent la remise du matériel.",
+          "explanation_zh": "借出前，志愿者会检查设备并说明安全规则。"
+        },
+        {
+          "prompt": "Pourquoi les retards gênent-ils le fonctionnement ?",
+          "options": [
+            "Ils rendent l'adhésion gratuite",
+            "Ils suppriment le besoin de stockage",
+            "Ils augmentent immédiatement le prix des outils",
+            "Ils empêchent les emprunteurs suivants de réaliser leur projet"
+          ],
+          "answer": "Ils empêchent les emprunteurs suivants de réaliser leur projet",
+          "explanation_fr": "Une réservation dépend du retour ponctuel de l'emprunt précédent.",
+          "explanation_zh": "下一位使用者的计划依赖上一位按时归还。"
+        },
+        {
+          "prompt": "Que souligne le dernier paragraphe au sujet du partage ?",
+          "options": [
+            "Le partage exige une responsabilité collective",
+            "Tous les objets doivent devenir gratuits",
+            "Les achats personnels doivent être interdits",
+            "L'entretien professionnel est inutile"
+          ],
+          "answer": "Le partage exige une responsabilité collective",
+          "explanation_fr": "Le dernier paragraphe insiste sur la responsabilité autour des biens communs.",
+          "explanation_zh": "结尾强调共同使用物品需要集体责任。"
+        }
+      ],
+      "vocabulary": [
+        {
+          "word": "une adhésion",
+          "definition_fr": "L'inscription à une association ou à un service.",
+          "definition_zh": "会员资格；加入。"
+        },
+        {
+          "word": "un inventaire",
+          "definition_fr": "Une liste détaillée des objets disponibles.",
+          "definition_zh": "库存清单。"
+        },
+        {
+          "word": "une caution",
+          "definition_fr": "Une somme garantie, rendue si tout se passe bien.",
+          "definition_zh": "押金。"
+        },
+        {
+          "word": "ponctuel",
+          "definition_fr": "Qui respecte l'heure ou le délai prévu.",
+          "definition_zh": "准时的。"
+        }
+      ]
+    },
+    "submission": {
+      "id": 10,
+      "task_id": 11,
+      "answer_text": "",
+      "submitted_at": "2026-08-27T16:48:11+02:00",
+      "score": 4,
+      "feedback": {
+        "answers": {
+          "1": "Un bénévole contrôle l'objet et rappelle la sécurité",
+          "0": "L'achat individuel de matériel peu utilisé",
+          "2": "Ils empêchent les emprunteurs suivants de réaliser leur projet",
+          "3": "Le partage exige une responsabilité collective"
+        },
+        "questions": [
+          {
+            "index": 0,
+            "user_answer": "L'achat individuel de matériel peu utilisé",
+            "is_correct": true
+          },
+          {
+            "index": 1,
+            "user_answer": "Un bénévole contrôle l'objet et rappelle la sécurité",
+            "is_correct": true
+          },
+          {
+            "index": 2,
+            "user_answer": "Ils empêchent les emprunteurs suivants de réaliser leur projet",
+            "is_correct": true
+          },
+          {
+            "index": 3,
+            "user_answer": "Le partage exige une responsabilité collective",
+            "is_correct": true
+          }
+        ],
+        "timed_out": false
+      }
+    }
+  },
+  "writing": {
+    "id": 12,
+    "study_date": "2026-08-27",
+    "task_type": "writing",
+    "status": "completed",
+    "title": "Proposer une organisation de travail hybride",
+    "source_name": null,
+    "source_url": null,
+    "content_source": "offline",
+    "generated_at": "2026-08-27T07:00:59+02:00",
+    "submitted_at": "2026-08-27T22:12:31+02:00",
+    "score": 10,
+    "started_at": null,
+    "deadline_at": null,
+    "grading_started_at": null,
+    "content": {
+      "title": "Proposer une organisation de travail hybride",
+      "context_fr": "Votre entreprise impose désormais quatre jours de présence au bureau. Cette règle facilite certaines réunions, mais plusieurs collègues perdent beaucoup de temps dans les transports et peinent à se concentrer dans l’espace ouvert. La direction accepte d’examiner une proposition d’équipe fondée sur des objectifs mesurables.",
+      "instructions_fr": "Rédigez une note à votre responsable d’équipe. Présentez clairement les limites de l’organisation actuelle, proposez un rythme hybride précis et définissez deux indicateurs permettant d’évaluer cette expérience après deux mois.",
+      "instructions_zh": "请给团队负责人写一份内部建议：说明现行办公安排的问题，提出明确的混合办公节奏，并设定两个可在两个月后评估试验效果的指标。",
+      "min_words": 120,
+      "max_words": 180,
+      "model_answers": [
+        {
+          "level": "B2",
+          "text": "Objet : proposition d’une organisation hybride\n\nNotre présence presque quotidienne au bureau facilite les échanges, mais elle entraîne aussi de longs trajets et de nombreuses interruptions. Je propose deux jours de télétravail fixes par semaine, le mardi et le jeudi. Les réunions collectives auraient lieu les autres jours, lorsque toute l’équipe serait présente.\n\nNous pourrions tester ce fonctionnement pendant deux mois. Pour l’évaluer, comparons le nombre de projets terminés dans les délais et demandons chaque semaine aux collègues s’ils parviennent mieux à se concentrer. Si la coordination se dégrade, nous ajusterons les jours choisis.\n\nCette solution préserverait la collaboration tout en offrant de meilleures conditions de travail.",
+          "vocabulary": [
+            {
+              "expression_fr": "un rythme hybride",
+              "meaning_zh": "混合办公节奏"
+            },
+            {
+              "expression_fr": "terminer dans les délais",
+              "meaning_zh": "按时完成"
+            },
+            {
+              "expression_fr": "ajuster le fonctionnement",
+              "meaning_zh": "调整运作方式"
+            }
+          ]
+        },
+        {
+          "level": "C2",
+          "text": "Objet : expérimentation d’un cadre hybride fondé sur les résultats\n\nL’obligation de présence quatre jours sur cinq répond à un besoin légitime de coordination, mais elle confond parfois visibilité et efficacité. Les trajets, le bruit et les sollicitations permanentes réduisent le temps consacré aux tâches exigeant une forte concentration.\n\nJe suggère une phase pilote de huit semaines : trois journées communes au bureau, deux journées à distance et un créneau collectif protégé pour les décisions importantes. Deux critères permettraient d’en juger objectivement : le respect des échéances et le délai moyen de réponse entre collègues. Un bref questionnaire mesurerait également la qualité de concentration.\n\nCe protocole réversible nous fournirait des données concrètes avant toute décision durable.",
+          "vocabulary": [
+            {
+              "expression_fr": "confondre visibilité et efficacité",
+              "meaning_zh": "混淆可见度与效率"
+            },
+            {
+              "expression_fr": "une phase pilote",
+              "meaning_zh": "试行阶段"
+            },
+            {
+              "expression_fr": "un protocole réversible",
+              "meaning_zh": "可撤销的试行方案"
+            }
+          ]
+        }
+      ]
+    },
+    "submission": {
+      "id": 11,
+      "task_id": 12,
+      "answer_text": "Pouvent les salariés plus productive dans le bureau que dans chez eux? Donc, c'est dependant quelque facteurs par examples les procecuses de travail. Mais en fait, dans mon équipe, depuis le discussion entre toutes les membres, on d'accord que le travail hybride est meilleure que soit seul en site ou soit seul en remote. (3 jours en site et 2 jours en remote)\n\nParce que le mode hybride permet les employées plus de flexibility. En général, il va pouvoir les aider sur garner plus de temps car il ne faut pas prendre la transportation pour aller chez enterprise. Mais, à même fois, il faut trouver les indicateurs concrete pour mesurer les impact. Dan ce car, je propose les deux examples. Le premier est le KPI personnel que avant, car il réflicie le performance individual. L'autre est le KPI de équipe, il permet on trouver si le performance collectif progress va bien ou pas.\n\nPendant le experience de deux mois, nous pouvons explorer les impacts rellement de mode hybride. Et ensuite, nous pouvons decider le contituer ou arrêter.",
+      "submitted_at": "2026-08-27T22:12:31+02:00",
+      "score": 10,
+      "feedback": {
+        "score_total": 10,
+        "dimensions": {
+          "task": {
+            "score": 3,
+            "comment_fr": "Le texte aborde le sujet et propose une organisation hybride (3 jours en présentiel, 2 en télétravail) ainsi que des indicateurs (KPI individuel et collectif). Cependant, la structure est désorganisée, les idées sont peu développées et le ton manque de formalité pour une note professionnelle.",
+            "comment_zh": "文本涵盖了主题，并提出了混合办公安排（3天现场，2天远程）以及指标（个人KPI和团队KPI）。但结构混乱，想法发展不足，且缺乏正式的商业语气。"
+          },
+          "cohesion": {
+            "score": 2,
+            "comment_fr": "Les connecteurs sont mal utilisés ou absents ('Donc', 'Parce que', 'à même fois'). Les phrases sont souvent disjointes, et les transitions entre les idées sont faibles. Le texte manque de fluidité et de cohérence globale.",
+            "comment_zh": "连接词使用不当或缺失（如'Donc'、'Parce que'、'à même temps'）。句子之间缺乏连贯性，过渡不自然，整体流畅性和一致性较差。"
+          },
+          "grammar": {
+            "score": 2,
+            "comment_fr": "De nombreuses erreurs grammaticales entachent le texte : accords (productive, employées), conjugaisons (peut, va pouvoir), prépositions (dans chez eux, chez enterprise), articles (les procecuses, les indicateurs concrete), et syntaxe (on d'accord, il réflicie).",
+            "comment_zh": "文本中存在大量语法错误：动词变位（productive、employées）、时态（peut、va pouvoir）、介词（dans chez eux、chez enterprise）、冠词（les procecuses、les indicateurs concrete）以及句法结构（on d'accord、il réflicie）。"
+          },
+          "vocabulary": {
+            "score": 3,
+            "comment_fr": "Le vocabulaire est globalement adapté au sujet, mais des termes sont mal orthographiés ('procecuses', 'garner', 'contituer') ou mal choisis ('flexibility' au lieu de 'flexibilité'). Certains mots sont trop familiers ('on d'accord', 'va bien ou pas').",
+            "comment_zh": "词汇整体符合主题，但存在拼写错误（procecuses、garner、contituer）或用词不当（flexibility应为flexibilité）。部分词语过于口语化（on d'accord、va bien ou pas）。"
+          }
+        },
+        "summary_fr": "Le texte propose une organisation hybride (3 jours en présentiel, 2 en télétravail) et des indicateurs (KPI individuel et collectif) pour évaluer son efficacité après deux mois. Cependant, il souffre de graves lacunes en grammaire, en cohésion et en précision lexicale, ce qui nuit à sa clarté et à son professionnalisme.",
+        "summary_zh": "文本提出了混合办公安排（3天现场，2天远程）以及两个月后评估其效果的指标（个人KPI和团队KPI）。但文本在语法、连贯性和词汇精确性方面存在严重问题，影响了其清晰度和专业性。",
+        "corrected_text": "Objet : Proposition d’une organisation de travail hybride\n\nLes salariés peuvent-ils être plus productifs au bureau que chez eux ? Cela dépend de plusieurs facteurs, comme les processus de travail. Après discussion avec tous les membres de l’équipe, nous sommes d’accord pour dire que le travail hybride est meilleur que le présentiel ou le télétravail exclusif. Nous proposons donc trois jours en présentiel et deux jours en télétravail.\n\nLe mode hybride offre aux employés plus de flexibilité. En effet, il leur permet de gagner du temps, car ils n’ont pas à prendre les transports pour se rendre à l’entreprise. Cependant, il faut trouver des indicateurs concrets pour mesurer les impacts. Dans ce cas, je propose deux exemples : le KPI personnel, comme auparavant, car il reflète la performance individuelle, et le KPI de l’équipe, qui permet de savoir si la performance collective progresse bien ou non.\n\nPendant l’expérience de deux mois, nous pourrons explorer les impacts réels du mode hybride. Ensuite, nous pourrons décider de continuer ou d’arrêter.",
+        "errors": [
+          {
+            "original": "Pouvent les salariés plus productive",
+            "correction": "Les salariés peuvent-ils être plus productifs",
+            "explanation_fr": "Erreur de conjugaison ('Pouvent' au lieu de 'Peut-on' ou 'Les salariés peuvent-ils') et d'accord ('productive' au lieu de 'productifs'). La question doit être correctement formulée.",
+            "explanation_zh": "动词变位错误（Pouvent应为Peut-on或Les salariés peuvent-ils），形容词性数配合错误（productive应为productifs）。问题的表述方式需要修正。",
+            "grammar_key": "inversion"
+          },
+          {
+            "original": "dans chez eux",
+            "correction": "chez eux",
+            "explanation_fr": "Redondance : 'dans' est inutile avec 'chez'.",
+            "explanation_zh": "冗余错误：'dans'与'chez'重复，应删除'dans'。",
+            "grammar_key": "prepositions"
+          },
+          {
+            "original": "c'est dependant quelque facteurs par examples",
+            "correction": "cela dépend de plusieurs facteurs, par exemple",
+            "explanation_fr": "Erreur de conjugaison ('dependant' au lieu de 'dépend'), d'article ('quelque' au lieu de 'plusieurs') et de préposition ('par examples' au lieu de 'par exemple').",
+            "explanation_zh": "动词变位错误（dependant应为dépend），冠词错误（quelque应为plusieurs），介词错误（par examples应为par exemple）。",
+            "grammar_key": "prepositions"
+          },
+          {
+            "original": "depuis le discussion entre toutes les membres",
+            "correction": "après la discussion entre tous les membres",
+            "explanation_fr": "Erreur d'article ('le' au lieu de 'la') et d'accord ('toutes les membres' au lieu de 'tous les membres').",
+            "explanation_zh": "冠词错误（le应为la），性数配合错误（toutes les membres应为tous les membres）。",
+            "grammar_key": "articles-partitifs"
+          },
+          {
+            "original": "on d'accord que le travail hybride est meilleure",
+            "correction": "nous sommes d’accord pour dire que le travail hybride est meilleur",
+            "explanation_fr": "Erreur de syntaxe ('on d'accord' au lieu de 'nous sommes d’accord') et d'accord ('meilleure' au lieu de 'meilleur').",
+            "explanation_zh": "句法错误（on d'accord应为nous sommes d’accord），形容词性数配合错误（meilleure应为meilleur）。",
+            "grammar_key": "participes"
+          },
+          {
+            "original": "que soit seul en site ou soit seul en remote",
+            "correction": "que ce soit uniquement en présentiel ou uniquement en télétravail",
+            "explanation_fr": "Erreur de syntaxe ('que soit' au lieu de 'que ce soit') et de vocabulaire ('seul en site' et 'seul en remote' sont incorrects).",
+            "explanation_zh": "句法错误（que soit应为que ce soit），词汇错误（seul en site和seul en remote表述不当）。",
+            "grammar_key": "subjonctif"
+          },
+          {
+            "original": "Parce que le mode hybride permet les employées plus de flexibility",
+            "correction": "En effet, le mode hybride offre aux employés plus de flexibilité",
+            "explanation_fr": "Erreur d'accord ('employées' au lieu de 'employés'), de vocabulaire ('flexibility' au lieu de 'flexibilité') et de syntaxe ('permet les employées' au lieu de 'offre aux employés').",
+            "explanation_zh": "性数配合错误（employées应为employés），词汇错误（flexibility应为flexibilité），句法错误（permet les employées应为offre aux employés）。",
+            "grammar_key": "pronoms-complements"
+          },
+          {
+            "original": "il va pouvoir les aider sur garner plus de temps",
+            "correction": "il peut les aider à gagner plus de temps",
+            "explanation_fr": "Erreur de conjugaison ('va pouvoir' au lieu de 'peut'), de préposition ('sur' au lieu de 'à') et de vocabulaire ('garner' au lieu de 'gagner').",
+            "explanation_zh": "动词时态错误（va pouvoir应为peut），介词错误（sur应为à），词汇错误（garner应为gagner）。",
+            "grammar_key": "prepositions"
+          },
+          {
+            "original": "car il ne faut pas prendre la transportation pour aller chez enterprise",
+            "correction": "car ils n’ont pas à prendre les transports pour se rendre à l’entreprise",
+            "explanation_fr": "Erreur de conjugaison ('il' au lieu de 'ils'), d'article ('la transportation' au lieu de 'les transports') et de vocabulaire ('enterprise' au lieu de 'l’entreprise').",
+            "explanation_zh": "代词错误（il应为ils），冠词错误（la transportation应为les transports），词汇错误（enterprise应为l’entreprise）。",
+            "grammar_key": "pronoms-complements"
+          },
+          {
+            "original": "à même fois",
+            "correction": "en même temps",
+            "explanation_fr": "Erreur de préposition ('à' au lieu de 'en').",
+            "explanation_zh": "介词错误（à应为en）。",
+            "grammar_key": "prepositions"
+          },
+          {
+            "original": "il faut trouver les indicateurs concrete",
+            "correction": "il faut trouver des indicateurs concrets",
+            "explanation_fr": "Erreur d'article ('les' au lieu de 'des') et d'accord ('concrete' au lieu de 'concrets').",
+            "explanation_zh": "冠词错误（les应为des），形容词性数配合错误（concrete应为concrets）。",
+            "grammar_key": "articles-partitifs"
+          },
+          {
+            "original": "Dan ce car",
+            "correction": "Dans ce cas",
+            "explanation_fr": "Erreur d'orthographe ('Dan' au lieu de 'Dans') et de vocabulaire ('car' au lieu de 'cas').",
+            "explanation_zh": "拼写错误（Dan应为Dans），词汇错误（car应为cas）。",
+            "grammar_key": "locutions"
+          },
+          {
+            "original": "le KPI personnel que avant",
+            "correction": "le KPI personnel, comme auparavant",
+            "explanation_fr": "Erreur de syntaxe ('que avant' est incorrect).",
+            "explanation_zh": "句法错误（que avant表述不当）。",
+            "grammar_key": "connecteurs"
+          },
+          {
+            "original": "il réflicie le performance individual",
+            "correction": "il reflète la performance individuelle",
+            "explanation_fr": "Erreur d'orthographe ('réflicie' au lieu de 'reflète') et d'accord ('le performance' au lieu de 'la performance', 'individual' au lieu de 'individuelle').",
+            "explanation_zh": "拼写错误（réflicie应为reflète），冠词和形容词性数配合错误（le performance individual应为la performance individuelle）。",
+            "grammar_key": "participes"
+          },
+          {
+            "original": "le KPI de équipe, il permet on trouver si le performance collectif progress va bien ou pas",
+            "correction": "le KPI de l’équipe, qui permet de savoir si la performance collective progresse bien ou non",
+            "explanation_fr": "Erreur d'article ('de équipe' au lieu de 'de l’équipe'), de syntaxe ('il permet on trouver' au lieu de 'qui permet de savoir') et d'accord ('le performance' au lieu de 'la performance', 'progress' au lieu de 'progresse').",
+            "explanation_zh": "冠词错误（de équipe应为de l’équipe），句法错误（il permet on trouver应为qui permet de savoir），动词变位和冠词错误（le performance progress应为la performance progresse）。",
+            "grammar_key": "pronoms-relatifs"
+          },
+          {
+            "original": "Pendant le experience de deux mois",
+            "correction": "Pendant l’expérience de deux mois",
+            "explanation_fr": "Erreur d'article ('le' au lieu de 'l’').",
+            "explanation_zh": "冠词错误（le应为l’）。",
+            "grammar_key": "articles-partitifs"
+          },
+          {
+            "original": "les impacts rellement",
+            "correction": "les impacts réels",
+            "explanation_fr": "Erreur d'orthographe ('rellement' au lieu de 'réels').",
+            "explanation_zh": "拼写错误（rellement应为réels）。",
+            "grammar_key": "participes"
+          },
+          {
+            "original": "nous pouvons decider le contituer ou arrêter",
+            "correction": "nous pourrons décider de continuer ou d’arrêter",
+            "explanation_fr": "Erreur de conjugaison ('pouvons' au lieu de 'pourrons'), d'orthographe ('decider' au lieu de 'décider', 'contituer' au lieu de 'continuer') et de syntaxe ('le contituer' au lieu de 'de continuer').",
+            "explanation_zh": "动词时态错误（pouvons应为pourrons），拼写错误（decider应为décider，contituer应为continuer），句法错误（le contituer应为de continuer）。",
+            "grammar_key": "futur-anterieur"
+          }
+        ],
+        "model_answers": [
+          {
+            "level": "B2",
+            "text": "Objet : Proposition d’un modèle hybride pour l’équipe\n\nActuellement, la présence obligatoire quatre jours par semaine pose des problèmes : les trajets sont longs et les espaces ouverts nuisent à la concentration. Après discussion, l’équipe propose un rythme hybride avec trois jours au bureau et deux en télétravail.\n\nPour évaluer cette solution après deux mois, nous utiliserons deux indicateurs : le taux de projets livrés à temps et un questionnaire hebdomadaire sur la productivité perçue. Si les résultats sont positifs, nous pourrons généraliser ce modèle.",
+            "vocabulary": [
+              {
+                "expression_fr": "un rythme hybride",
+                "meaning_zh": "混合办公节奏"
+              },
+              {
+                "expression_fr": "nuire à la concentration",
+                "meaning_zh": "影响专注力"
+              },
+              {
+                "expression_fr": "un questionnaire hebdomadaire",
+                "meaning_zh": "每周问卷"
+              },
+              {
+                "expression_fr": "livrer à temps",
+                "meaning_zh": "按时交付"
+              },
+              {
+                "expression_fr": "généraliser un modèle",
+                "meaning_zh": "推广一种模式"
+              }
+            ]
+          },
+          {
+            "level": "C2",
+            "text": "Objet : Expérimentation d’une organisation hybride axée sur les résultats\n\nL’obligation de présence quatre jours sur cinq, bien qu’utile pour la coordination, engendre des pertes de temps et une baisse de concentration dans les espaces ouverts. Nous suggérons une phase pilote de deux mois avec trois jours en présentiel et deux en télétravail, les réunions stratégiques étant planifiées les jours de présence.\n\nL’évaluation reposera sur deux critères : le respect des délais de livraison et l’analyse des retours d’expérience via un outil de feedback anonyme. Cette approche permettra d’ajuster le modèle en fonction des données recueillies.",
+            "vocabulary": [
+              {
+                "expression_fr": "axée sur les résultats",
+                "meaning_zh": "以结果为导向"
+              },
+              {
+                "expression_fr": "engendrer des pertes de temps",
+                "meaning_zh": "造成时间浪费"
+              },
+              {
+                "expression_fr": "une phase pilote",
+                "meaning_zh": "试行阶段"
+              },
+              {
+                "expression_fr": "les retours d’expérience",
+                "meaning_zh": "经验反馈"
+              },
+              {
+                "expression_fr": "un outil de feedback anonyme",
+                "meaning_zh": "匿名反馈工具"
+              },
+              {
+                "expression_fr": "ajuster le modèle",
+                "meaning_zh": "调整模式"
+              },
+              {
+                "expression_fr": "les données recueillies",
+                "meaning_zh": "收集的数据"
+              }
+            ]
+          }
+        ],
+        "optimization_guidance": [
+          {
+            "advice_fr": "Structurez votre texte en paragraphes clairs (problème, solution, évaluation) pour améliorer la lisibilité.",
+            "advice_zh": "将文本分为清晰的段落（问题、解决方案、评估）以提高可读性。"
+          },
+          {
+            "advice_fr": "Utilisez des connecteurs logiques ('En effet', 'Par conséquent', 'Ainsi') pour relier vos idées.",
+            "advice_zh": "使用逻辑连接词（如En effet、Par conséquent、Ainsi）来连接想法。"
+          },
+          {
+            "advice_fr": "Vérifiez systématiquement les accords (genre, nombre) et les conjugaisons pour éviter les erreurs grammaticales.",
+            "advice_zh": "系统检查性数配合和动词变位，避免语法错误。"
+          },
+          {
+            "advice_fr": "Privilégiez un vocabulaire précis et professionnel (ex. 'flexibilité' au lieu de 'flexibility').",
+            "advice_zh": "优先使用精确且专业的词汇（如flexibilité而非flexibility）。"
+          },
+          {
+            "advice_fr": "Adoptez un ton formel et évitez les formulations familières ('on d'accord', 'va bien ou pas').",
+            "advice_zh": "采用正式语气，避免使用非正式表达（如on d'accord、va bien ou pas）。"
+          },
+          {
+            "advice_fr": "Relisez votre texte à voix haute pour repérer les erreurs de syntaxe et de fluidité.",
+            "advice_zh": "大声朗读文本，以发现句法和流畅性问题。"
+          }
+        ]
+      }
+    },
+    "draft_text": null,
+    "correction_error": false
+  },
+  "history": [
+    {
+      "id": 7,
+      "study_date": "2026-08-28",
+      "status": "completed",
+      "generated_at": "2026-08-28T07:27:36+02:00",
+      "submitted_at": "2026-08-28T14:04:48+02:00",
+      "score": 4,
+      "content_source": "offline",
+      "started_at": "2026-08-28T13:59:55+02:00",
+      "question_deadline_at": null,
+      "current_position": 10,
+      "activity_type": "daily"
+    },
+    {
+      "id": 12,
+      "study_date": "2026-08-27",
+      "task_type": "writing",
+      "status": "completed",
+      "title": "Proposer une organisation de travail hybride",
+      "score": 10,
+      "submitted_at": "2026-08-27T22:12:31+02:00",
+      "content_source": "offline",
+      "activity_type": "writing"
+    },
+    {
+      "id": 11,
+      "study_date": "2026-08-27",
+      "task_type": "reading",
+      "status": "completed",
+      "title": "Les bibliothèques d'objets favorisent le partage du matériel",
+      "score": 4,
+      "submitted_at": "2026-08-27T16:48:11+02:00",
+      "content_source": "offline",
+      "activity_type": "reading"
+    }
+  ],
+  "mistakes": [
+    {
+      "id": 61,
+      "prompt": "N'eût été son intervention, le désaccord se serait prolongé.",
+      "answer": "Sans son intervention",
+      "explanation_fr": "« N'eût été » exprime une condition passée irréelle et signifie ici « sans ».",
+      "explanation_zh": "n'eût été 是正式的过去非现实条件表达，相当于“若不是……”。\n词汇与用法：si + 愈过去时，主句用过去条件式，表达未实现的过去。",
+      "grammar_key": "hypothese-passee",
+      "kind": "mcq",
+      "user_answer": "Grâce à son absence",
+      "study_date": "2026-08-28",
+      "options": [
+        "Malgré son accord",
+        "Sans son intervention",
+        "Après son intervention",
+        "Grâce à son absence"
+      ],
+      "option_explanations": {
+        "Sans son intervention": "Reformulation correcte de la condition irréelle.",
+        "Grâce à son absence": "Le sens causal est inversé.",
+        "Après son intervention": "La simple succession temporelle ne suffit pas.",
+        "Malgré son accord": "Cette concession change le sens."
+      }
+    },
+    {
+      "id": 62,
+      "prompt": "L'équipe s'est engagée à ce que chaque demande ___ sous quarante-huit heures.",
+      "answer": "soit traitée",
+      "explanation_fr": "« S'engager à ce que » demande le subjonctif, ici à la voix passive.",
+      "explanation_zh": "s'engager à ce que 后接虚拟式；demande 是被处理的对象，使用 soit traitée。\n词汇与用法：必要、怀疑、愿望和部分让步连词后常用虚拟式。",
+      "grammar_key": "subjonctif",
+      "kind": "mcq",
+      "user_answer": "serait traitée",
+      "study_date": "2026-08-28",
+      "options": [
+        "est traitée",
+        "sera traitée",
+        "soit traitée",
+        "serait traitée"
+      ],
+      "option_explanations": {
+        "soit traitée": "Subjonctif passif correct.",
+        "est traitée": "Indicatif présent incorrect après cette locution.",
+        "sera traitée": "Futur simple non attendu dans la subordonnée.",
+        "serait traitée": "Conditionnel sans valeur ici."
+      }
+    },
+    {
+      "id": 63,
+      "prompt": "Plus les délais raccourcissent, plus la coordination ___ essentielle.",
+      "answer": "devient",
+      "explanation_fr": "La structure corrélative « plus..., plus... » prend ici l'indicatif présent.",
+      "explanation_zh": "plus… plus… 表示“越……越……”；描述一般变化时使用直陈式现在时。\n词汇与用法：bon 的形容词比较级是 meilleur；mieux 是副词 bien 的比较级。",
+      "grammar_key": "comparatif",
+      "kind": "mcq",
+      "user_answer": "devenue",
+      "study_date": "2026-08-28",
+      "options": [
+        "devient",
+        "deviendrait",
+        "devenue",
+        "devenir"
+      ],
+      "option_explanations": {
+        "devient": "Indicatif présent correct.",
+        "deviendrait": "Le conditionnel ajouterait une hypothèse absente.",
+        "devenue": "Le participe ne forme pas le verbe.",
+        "devenir": "L'infinitif ne peut être le noyau de la proposition."
+      }
+    },
+    {
+      "id": 64,
+      "prompt": "Ce dossier mérite d'___ examiné plus attentivement.",
+      "answer": "être",
+      "explanation_fr": "« Mériter de » est suivi de l'infinitif passif « être examiné ».",
+      "explanation_zh": "mériter de 后接不定式；dossier 是被审查的对象，因此使用被动式 être examiné。\n词汇与用法：过去分词可表达被动并发生性数配合；现在分词通常表达主动。",
+      "grammar_key": "participes",
+      "kind": "mcq",
+      "user_answer": "étant",
+      "study_date": "2026-08-28",
+      "options": [
+        "étant",
+        "avoir",
+        "été",
+        "être"
+      ],
+      "option_explanations": {
+        "être": "Infinitif passif correct.",
+        "avoir": "« avoir examiné » aurait un sens actif.",
+        "été": "Le participe passé seul ne convient pas.",
+        "étant": "Le participe présent ne complète pas « mérite de »."
+      }
+    },
+    {
+      "id": 67,
+      "prompt": "___ les contraintes, l'équipe a livré le projet à temps.",
+      "answer": "Malgré",
+      "explanation_fr": "« Malgré » introduit un nom et exprime une concession.",
+      "explanation_zh": "malgré + 名词表示“尽管……”。\n词汇与用法：malgré/en dépit de 后接名词；bien que/quoique 后接虚拟式。",
+      "grammar_key": "concession",
+      "kind": "fill",
+      "user_answer": "Puisque",
+      "study_date": "2026-08-28",
+      "options": [],
+      "option_explanations": {}
+    },
+    {
+      "id": 69,
+      "prompt": "Il parle de cette période comme s'il l'___ lui-même. (vivre)",
+      "answer": "avait vécue",
+      "explanation_fr": "« Comme si » introduit l'irréel du passé et le participe s'accorde avec « l' ».",
+      "explanation_zh": "comme si 后用愈过去时；l' 指阴性 période，因此 vécue 要配合。\n词汇与用法：愈过去时表示“过去的过去”，常与 comme si 或叙事先后关系连用。",
+      "grammar_key": "plus-que-parfait",
+      "kind": "fill",
+      "user_answer": "vivrait",
+      "study_date": "2026-08-28",
+      "options": [],
+      "option_explanations": {}
+    },
+    {
+      "id": 52,
+      "prompt": "C'est à cette conclusion ___ les chercheurs sont parvenus.",
+      "answer": "que",
+      "explanation_fr": "La structure « c'est à X que » met le complément en relief.",
+      "explanation_zh": "强调结构 c'est à X que 用于突出由 à 引出的成分。\n词汇与用法：c'est… que/qui 和 ce dont… c'est… 用来突出信息焦点。",
+      "grammar_key": "mise-en-relief",
+      "kind": "mcq",
+      "user_answer": "dont",
+      "study_date": "2026-08-27",
+      "options": [
+        "dont",
+        "que",
+        "où",
+        "laquelle"
+      ],
+      "option_explanations": {
+        "que": "Corrélatif correct de la structure.",
+        "dont": "« dont » remplace un complément en de.",
+        "où": "« où » exprime lieu ou temps.",
+        "laquelle": "« laquelle » exigerait une préposition."
+      }
+    },
+    {
+      "id": 53,
+      "prompt": "Ce ___ nous avons besoin, c'est d'une méthode fiable.",
+      "answer": "dont",
+      "explanation_fr": "« Avoir besoin de » est repris par « dont » dans cette phrase clivée.",
+      "explanation_zh": "avoir besoin de 中的 de 由 dont 替代；ce dont… c'est… 是强调结构。\n词汇与用法：先确认动词要求的介词，再选择 dont、auquel、sur lequel 等关系代词。",
+      "grammar_key": "pronoms-relatifs",
+      "kind": "mcq",
+      "user_answer": "que",
+      "study_date": "2026-08-27",
+      "options": [
+        "que",
+        "lequel",
+        "à quoi",
+        "dont"
+      ],
+      "option_explanations": {
+        "dont": "Reprise de de correcte.",
+        "que": "« que » reprendrait un COD.",
+        "à quoi": "« à quoi » reprendrait à.",
+        "lequel": "« lequel » exige une préposition."
+      }
+    },
+    {
+      "id": 54,
+      "prompt": "Cette hypothèse est crédible, ___ plusieurs indices convergent.",
+      "answer": "d'autant plus que",
+      "explanation_fr": "« D'autant plus que » renforce une affirmation par une raison.",
+      "explanation_zh": "d'autant plus que 意为“更何况、尤其因为”，用于补充强化理由。\n词汇与用法：连接词要区分时间、因果、让步和递进，不能只按中文直译替换。",
+      "grammar_key": "connecteurs",
+      "kind": "mcq",
+      "user_answer": "bien que",
+      "study_date": "2026-08-27",
+      "options": [
+        "d'autant plus que",
+        "quitte à",
+        "faute de",
+        "bien que"
+      ],
+      "option_explanations": {
+        "d'autant plus que": "Renforcement causal correct.",
+        "bien que": "« bien que » marque la concession.",
+        "faute de": "« faute de » précède un nom.",
+        "quitte à": "« quitte à » introduit un risque."
+      }
+    },
+    {
+      "id": 56,
+      "prompt": "Il a poursuivi son projet, ___ les critiques répétées.",
+      "answer": "en dépit de",
+      "explanation_fr": "« En dépit de » est une locution prépositive de concession.",
+      "explanation_zh": "en dépit de 意为“尽管、不顾”，后接名词。\n词汇与用法：malgré/en dépit de 后接名词；bien que/quoique 后接虚拟式。",
+      "grammar_key": "concession",
+      "kind": "fill",
+      "user_answer": "pourtant",
+      "study_date": "2026-08-27",
+      "options": [],
+      "option_explanations": {}
+    },
+    {
+      "id": 58,
+      "prompt": "Le comité recommande que cette mesure ___ sans délai. (appliquer)",
+      "answer": "soit appliquée",
+      "explanation_fr": "« Recommander que » demande le subjonctif passif.",
+      "explanation_zh": "recommander que 后接虚拟式；mesure 是动作承受者，用 soit appliquée。\n词汇与用法：必要、怀疑、愿望和部分让步连词后常用虚拟式。",
+      "grammar_key": "subjonctif",
+      "kind": "fill",
+      "user_answer": "applique",
+      "study_date": "2026-08-27",
+      "options": [],
+      "option_explanations": {}
+    },
+    {
+      "id": 59,
+      "prompt": "Les résultats sont ___ plus convaincants qu'ils ont été reproduits ailleurs.",
+      "answer": "d'autant",
+      "explanation_fr": "« D'autant plus... que... » renforce un jugement par une justification.",
+      "explanation_zh": "d'autant plus… que… 意为“更加……，因为……”。\n词汇与用法：连接词要区分时间、因果、让步和递进，不能只按中文直译替换。",
+      "grammar_key": "connecteurs",
+      "kind": "fill",
+      "user_answer": "les",
+      "study_date": "2026-08-27",
+      "options": [],
+      "option_explanations": {}
+    },
+    {
+      "id": 42,
+      "prompt": "Il s'en est fallu de peu que le projet ___.",
+      "answer": "échoue",
+      "explanation_fr": "« Il s'en faut de peu que » exprime un résultat presque réalisé au subjonctif.",
+      "explanation_zh": "il s'en est fallu de peu que 表示“差一点就……”，后接虚拟式。\n词汇与用法：必要、怀疑、愿望和部分让步连词后常用虚拟式。",
+      "grammar_key": "subjonctif",
+      "kind": "mcq",
+      "user_answer": "échouait",
+      "study_date": "2026-08-26",
+      "options": [
+        "échoue",
+        "échouait",
+        "échouerait",
+        "a échoué"
+      ],
+      "option_explanations": {
+        "échoue": "Subjonctif présent correct.",
+        "a échoué": "Passé composé indicatif incorrect.",
+        "échouerait": "Conditionnel incorrect.",
+        "échouait": "Imparfait indicatif incorrect."
+      }
+    },
+    {
+      "id": 44,
+      "prompt": "Quoiqu'elle ___ les risques, elle a maintenu sa décision.",
+      "answer": "connût",
+      "explanation_fr": "« Quoique » demande ici le subjonctif imparfait dans un registre soutenu.",
+      "explanation_zh": "quoique 表示让步；正式书面语中可使用虚拟式未完成过去时 connût。\n词汇与用法：必要、怀疑、愿望和部分让步连词后常用虚拟式。",
+      "grammar_key": "subjonctif",
+      "kind": "mcq",
+      "user_answer": "connaissait",
+      "study_date": "2026-08-26",
+      "options": [
+        "connaissait",
+        "connaîtra",
+        "connût",
+        "connaîtrait"
+      ],
+      "option_explanations": {
+        "connût": "Subjonctif imparfait soutenu correct.",
+        "connaissait": "Indicatif incorrect après « quoique ».",
+        "connaîtra": "Futur incompatible avec le récit.",
+        "connaîtrait": "Conditionnel sans valeur ici."
+      }
+    },
+    {
+      "id": 46,
+      "prompt": "À peine la séance avait-elle commencé que plusieurs participants ___. (intervenir)",
+      "answer": "sont intervenus",
+      "explanation_fr": "Le second événement ponctuel se met au passé composé.",
+      "explanation_zh": "à peine… que… 表示“刚……就……”；后发生的瞬时动作使用复合过去时。\n词汇与用法：à peine、encore 等位于句首时常见正式倒装。",
+      "grammar_key": "inversion",
+      "kind": "fill",
+      "user_answer": "",
+      "study_date": "2026-08-26",
+      "options": [],
+      "option_explanations": {}
+    },
+    {
+      "id": 47,
+      "prompt": "___ de preuves suffisantes, l'accusation a été abandonnée.",
+      "answer": "Faute",
+      "explanation_fr": "« Faute de » exprime qu'un élément nécessaire manque.",
+      "explanation_zh": "faute de 表示“由于缺少……”，常见于正式语体。\n词汇与用法：faute de 表示“因为缺少”；en raison de 表示中性原因。",
+      "grammar_key": "cause",
+      "kind": "fill",
+      "user_answer": "Que",
+      "study_date": "2026-08-26",
+      "options": [],
+      "option_explanations": {}
+    }
+  ],
+  "grammar": [
+    {
+      "grammar_key": "subjonctif",
+      "title_fr": "Le subjonctif présent",
+      "explanation_fr": "S'emploie après la nécessité, le souhait, le doute ou certaines conjonctions.",
+      "explanation_zh": "用于必要、愿望、怀疑以及某些连词之后。",
+      "example_fr": "Il faut que tu viennes.",
+      "mistake_count": 13,
+      "attempt_count": 17
+    },
+    {
+      "grammar_key": "connecteurs",
+      "title_fr": "Les connecteurs logiques",
+      "explanation_fr": "Ils organisent le temps, la cause, la conséquence ou l'opposition.",
+      "explanation_zh": "逻辑连接词组织时间、原因、结果或转折。",
+      "example_fr": "Il pleut, pourtant nous sortons.",
+      "mistake_count": 11,
+      "attempt_count": 13
+    },
+    {
+      "grammar_key": "participes",
+      "title_fr": "Les formes participiales",
+      "explanation_fr": "Les participes condensent une proposition active ou passive.",
+      "explanation_zh": "分词结构可压缩主动或被动从句。",
+      "example_fr": "Informée à temps, elle a réagi.",
+      "mistake_count": 10,
+      "attempt_count": 11
+    },
+    {
+      "grammar_key": "pronoms-relatifs",
+      "title_fr": "Les pronoms relatifs",
+      "explanation_fr": "Relient deux propositions en remplaçant un nom.",
+      "explanation_zh": "关系代词连接从句并替代名词。",
+      "example_fr": "Voici la personne dont je parle.",
+      "mistake_count": 6,
+      "attempt_count": 8
+    },
+    {
+      "grammar_key": "concession",
+      "title_fr": "La concession",
+      "explanation_fr": "Présente un obstacle qui n'empêche pas le résultat.",
+      "explanation_zh": "表示某个障碍并未阻止结果发生。",
+      "example_fr": "Malgré la pluie, nous sommes sortis.",
+      "mistake_count": 4,
+      "attempt_count": 4
+    },
+    {
+      "grammar_key": "comparatif",
+      "title_fr": "Le comparatif",
+      "explanation_fr": "Il compare deux éléments avec plus, moins, aussi ou une forme irrégulière.",
+      "explanation_zh": "使用 plus、moins、aussi 或不规则形式比较两个事物。",
+      "example_fr": "Ce trajet est plus court.",
+      "mistake_count": 3,
+      "attempt_count": 5
+    },
+    {
+      "grammar_key": "inversion",
+      "title_fr": "L'inversion soutenue",
+      "explanation_fr": "Certaines locutions placées en tête entraînent l'inversion du sujet.",
+      "explanation_zh": "某些置于句首的正式表达会引起主谓倒装。",
+      "example_fr": "À peine était-il arrivé que le train repartait.",
+      "mistake_count": 2,
+      "attempt_count": 4
+    },
+    {
+      "grammar_key": "cause",
+      "title_fr": "Exprimer la cause",
+      "explanation_fr": "Des locutions précisent la présence ou l'absence d'une cause.",
+      "explanation_zh": "不同短语可表达原因或某种条件的缺失。",
+      "example_fr": "Faute de temps, nous avons abrégé.",
+      "mistake_count": 1,
+      "attempt_count": 2
+    },
+    {
+      "grammar_key": "hypothese-passee",
+      "title_fr": "L'hypothèse passée",
+      "explanation_fr": "Combine plus-que-parfait et conditionnel passé pour l'irréel.",
+      "explanation_zh": "过去非现实假设结合愈过去时和过去条件式。",
+      "example_fr": "Si j'avais su, je serais venu.",
+      "mistake_count": 1,
+      "attempt_count": 3
+    },
+    {
+      "grammar_key": "mise-en-relief",
+      "title_fr": "La mise en relief",
+      "explanation_fr": "Les structures clivées attirent l'attention sur un constituant.",
+      "explanation_zh": "分裂句结构用于突出某个成分。",
+      "example_fr": "C'est ce point que je souligne.",
+      "mistake_count": 1,
+      "attempt_count": 2
+    }
+  ],
+  "conjugations": [
+    {
+      "verb": "avoir",
+      "translation_zh": "有",
+      "mistake_count": 16,
+      "tenses": [
+        {
+          "name": "Présent",
+          "mistake_count": 11,
+          "forms": {
+            "je": "ai",
+            "tu": "as",
+            "il / elle": "a",
+            "nous": "avons",
+            "vous": "avez",
+            "ils / elles": "ont"
+          }
+        },
+        {
+          "name": "Passé composé",
+          "mistake_count": 2,
+          "forms": {
+            "je": "ai eu",
+            "tu": "as eu",
+            "il / elle": "a eu",
+            "nous": "avons eu",
+            "vous": "avez eu",
+            "ils / elles": "ont eu"
+          }
+        },
+        {
+          "name": "Conditionnel présent",
+          "mistake_count": 1,
+          "forms": {
+            "je": "aurais",
+            "tu": "aurais",
+            "il / elle": "aurait",
+            "nous": "aurions",
+            "vous": "auriez",
+            "ils / elles": "auraient"
+          }
+        },
+        {
+          "name": "Imparfait",
+          "mistake_count": 1,
+          "forms": {
+            "je": "avais",
+            "tu": "avais",
+            "il / elle": "avait",
+            "nous": "avions",
+            "vous": "aviez",
+            "ils / elles": "avaient"
+          }
+        },
+        {
+          "name": "Subjonctif présent",
+          "mistake_count": 1,
+          "forms": {
+            "je": "aie",
+            "tu": "aies",
+            "il / elle": "ait",
+            "nous": "ayons",
+            "vous": "ayez",
+            "ils / elles": "aient"
+          }
+        }
+      ],
+      "examples": [
+        {
+          "prompt": "Il parle de cette période comme s'il l'___ lui-même. (vivre)",
+          "answer": "avait vécue"
+        },
+        {
+          "prompt": "car il ne faut pas prendre la transportation pour aller chez enterprise",
+          "answer": "car ils n’ont pas à prendre les transports pour se rendre à l’entreprise"
+        }
+      ]
+    },
+    {
+      "verb": "être",
+      "translation_zh": "是；处于",
+      "mistake_count": 16,
+      "tenses": [
+        {
+          "name": "Présent",
+          "mistake_count": 7,
+          "forms": {
+            "je": "suis",
+            "tu": "es",
+            "il / elle": "est",
+            "nous": "sommes",
+            "vous": "êtes",
+            "ils / elles": "sont"
+          }
+        },
+        {
+          "name": "Subjonctif présent",
+          "mistake_count": 4,
+          "forms": {
+            "je": "sois",
+            "tu": "sois",
+            "il / elle": "soit",
+            "nous": "soyons",
+            "vous": "soyez",
+            "ils / elles": "soient"
+          }
+        },
+        {
+          "name": "Conditionnel présent",
+          "mistake_count": 2,
+          "forms": {
+            "je": "serais",
+            "tu": "serais",
+            "il / elle": "serait",
+            "nous": "serions",
+            "vous": "seriez",
+            "ils / elles": "seraient"
+          }
+        },
+        {
+          "name": "Passé composé",
+          "mistake_count": 2,
+          "forms": {
+            "je": "ai été",
+            "tu": "as été",
+            "il / elle": "a été",
+            "nous": "avons été",
+            "vous": "avez été",
+            "ils / elles": "ont été"
+          }
+        },
+        {
+          "name": "Imparfait",
+          "mistake_count": 1,
+          "forms": {
+            "je": "étais",
+            "tu": "étais",
+            "il / elle": "était",
+            "nous": "étions",
+            "vous": "étiez",
+            "ils / elles": "étaient"
+          }
+        }
+      ],
+      "examples": [
+        {
+          "prompt": "L'équipe s'est engagée à ce que chaque demande ___ sous quarante-huit heures.",
+          "answer": "soit traitée"
+        },
+        {
+          "prompt": "Le comité recommande que cette mesure ___ sans délai. (appliquer)",
+          "answer": "soit appliquée"
+        }
+      ]
+    },
+    {
+      "verb": "pouvoir",
+      "translation_zh": "能够",
+      "mistake_count": 11,
+      "tenses": [
+        {
+          "name": "Conditionnel présent",
+          "mistake_count": 5,
+          "forms": {
+            "je": "pourrais",
+            "tu": "pourrais",
+            "il / elle": "pourrait",
+            "nous": "pourrions",
+            "vous": "pourriez",
+            "ils / elles": "pourraient"
+          }
+        },
+        {
+          "name": "Présent",
+          "mistake_count": 2,
+          "forms": {
+            "je": "peux",
+            "tu": "peux",
+            "il / elle": "peut",
+            "nous": "pouvons",
+            "vous": "pouvez",
+            "ils / elles": "peuvent"
+          }
+        },
+        {
+          "name": "Futur antérieur",
+          "mistake_count": 1,
+          "forms": {
+            "je": "aurai pu",
+            "tu": "auras pu",
+            "il / elle": "aura pu",
+            "nous": "aurons pu",
+            "vous": "aurez pu",
+            "ils / elles": "auront pu"
+          }
+        },
+        {
+          "name": "Imparfait",
+          "mistake_count": 1,
+          "forms": {
+            "je": "pouvais",
+            "tu": "pouvais",
+            "il / elle": "pouvait",
+            "nous": "pouvions",
+            "vous": "pouviez",
+            "ils / elles": "pouvaient"
+          }
+        },
+        {
+          "name": "Passé composé",
+          "mistake_count": 1,
+          "forms": {
+            "je": "ai pu",
+            "tu": "as pu",
+            "il / elle": "a pu",
+            "nous": "avons pu",
+            "vous": "avez pu",
+            "ils / elles": "ont pu"
+          }
+        },
+        {
+          "name": "Subjonctif présent",
+          "mistake_count": 1,
+          "forms": {
+            "je": "puisse",
+            "tu": "puisses",
+            "il / elle": "puisse",
+            "nous": "puissions",
+            "vous": "puissiez",
+            "ils / elles": "puissent"
+          }
+        }
+      ],
+      "examples": [
+        {
+          "prompt": "La directrice a demandé si le rapport ___ avant vendredi. (pouvoir)",
+          "answer": "pourrait être achevé"
+        },
+        {
+          "prompt": "Il n'est pas exclu qu'une autre interprétation ___ retenue.",
+          "answer": "puisse être"
+        }
+      ]
+    },
+    {
+      "verb": "aller",
+      "translation_zh": "去",
+      "mistake_count": 1,
+      "tenses": [
+        {
+          "name": "Passé composé",
+          "mistake_count": 1,
+          "forms": {
+            "je": "suis allé(e)",
+            "tu": "es allé(e)",
+            "il / elle": "est allé(e)",
+            "nous": "sommes allé(e)s",
+            "vous": "êtes allé(e)(s)",
+            "ils / elles": "sont allé(e)s"
+          }
+        }
+      ],
+      "examples": [
+        {
+          "prompt": "Nous ______ (aller) au cinéma hier soir.",
+          "answer": "sommes allés"
+        }
+      ]
+    }
+  ],
+  "vocabulary": [
+    {
+      "id": 71,
+      "category": "community",
+      "word": "végétalisation",
+      "part_of_speech": "nom féminin",
+      "definition_fr": "action d'ajouter des plantes à un espace",
+      "definition_zh": "绿化",
+      "example_fr": "La végétalisation de la cour apporte de l'ombre en été.",
+      "example_zh": "庭院绿化能在夏季提供阴凉。",
+      "source_name": "Transition écologique",
+      "source_url": "https://www.ecologie.gouv.fr/",
+      "study_date": "2026-08-29",
+      "starred": false
+    },
+    {
+      "id": 72,
+      "category": "community",
+      "word": "nuisance",
+      "part_of_speech": "nom féminin",
+      "definition_fr": "élément qui gêne la vie quotidienne",
+      "definition_zh": "干扰；公害",
+      "example_fr": "Les riverains souhaitent réduire les nuisances sonores nocturnes.",
+      "example_zh": "附近居民希望减少夜间噪声干扰。",
+      "source_name": "Vie locale",
+      "source_url": "https://www.service-public.fr/",
+      "study_date": "2026-08-29",
+      "starred": false
+    },
+    {
+      "id": 73,
+      "category": "community",
+      "word": "transition",
+      "part_of_speech": "nom féminin",
+      "definition_fr": "passage progressif vers une nouvelle organisation",
+      "definition_zh": "转型；过渡",
+      "example_fr": "La transition énergétique modifie les priorités de la commune.",
+      "example_zh": "能源转型正在改变市镇的优先事项。",
+      "source_name": "Énergie",
+      "source_url": "https://www.ecologie.gouv.fr/",
+      "study_date": "2026-08-29",
+      "starred": false
+    },
+    {
+      "id": 74,
+      "category": "community",
+      "word": "consultation",
+      "part_of_speech": "nom féminin",
+      "definition_fr": "recueil de l'avis du public",
+      "definition_zh": "意见征询",
+      "example_fr": "La consultation en ligne restera ouverte pendant un mois.",
+      "example_zh": "线上意见征询将开放一个月。",
+      "source_name": "Participation citoyenne",
+      "source_url": "https://www.vie-publique.fr/",
+      "study_date": "2026-08-29",
+      "starred": false
+    },
+    {
+      "id": 75,
+      "category": "community",
+      "word": "mutualisation",
+      "part_of_speech": "nom féminin",
+      "definition_fr": "mise en commun de moyens",
+      "definition_zh": "资源共享",
+      "example_fr": "La mutualisation du matériel réduit les dépenses des associations.",
+      "example_zh": "共享设备可以降低协会的开支。",
+      "source_name": "Vie associative",
+      "source_url": "https://www.associations.gouv.fr/",
+      "study_date": "2026-08-29",
+      "starred": false
+    },
+    {
+      "id": 76,
+      "category": "daily",
+      "word": "éviter",
+      "part_of_speech": "verbe",
+      "definition_fr": "faire en sorte qu'une chose ne se produise pas",
+      "definition_zh": "避免",
+      "example_fr": "Je pars tôt pour éviter les embouteillages.",
+      "example_zh": "我早出发以避开堵车。",
+      "source_name": null,
+      "source_url": null,
+      "study_date": "2026-08-29",
+      "starred": false
+    },
+    {
+      "id": 77,
+      "category": "daily",
+      "word": "convenir",
+      "part_of_speech": "verbe",
+      "definition_fr": "être adapté ou acceptable",
+      "definition_zh": "适合；商定",
+      "example_fr": "Cette heure convient à toute l'équipe.",
+      "example_zh": "这个时间适合整个团队。",
+      "source_name": null,
+      "source_url": null,
+      "study_date": "2026-08-29",
+      "starred": false
+    },
+    {
+      "id": 78,
+      "category": "daily",
+      "word": "partager",
+      "part_of_speech": "verbe",
+      "definition_fr": "utiliser ou donner avec d'autres",
+      "definition_zh": "分享；共用",
+      "example_fr": "Nous partageons les frais du voyage.",
+      "example_zh": "我们共同承担旅行费用。",
+      "source_name": null,
+      "source_url": null,
+      "study_date": "2026-08-29",
+      "starred": false
+    },
+    {
+      "id": 79,
+      "category": "daily",
+      "word": "dépendre",
+      "part_of_speech": "verbe",
+      "definition_fr": "être déterminé par autre chose",
+      "definition_zh": "取决于",
+      "example_fr": "Le résultat dépend de notre préparation.",
+      "example_zh": "结果取决于我们的准备。",
+      "source_name": null,
+      "source_url": null,
+      "study_date": "2026-08-29",
+      "starred": false
+    },
+    {
+      "id": 80,
+      "category": "daily",
+      "word": "découvrir",
+      "part_of_speech": "verbe",
+      "definition_fr": "voir ou apprendre pour la première fois",
+      "definition_zh": "发现；初次了解",
+      "example_fr": "Nous découvrons un nouveau quartier.",
+      "example_zh": "我们正在探索一个新街区。",
+      "source_name": null,
+      "source_url": null,
+      "study_date": "2026-08-29",
+      "starred": false
+    },
+    {
+      "id": 61,
+      "category": "community",
+      "word": "recyclerie",
+      "part_of_speech": "nom féminin",
+      "definition_fr": "lieu où des objets sont récupérés et réemployés",
+      "definition_zh": "再利用中心",
+      "example_fr": "La recyclerie remet en état des meubles donnés par les habitants.",
+      "example_zh": "再利用中心修复居民捐赠的家具。",
+      "source_name": "Réemploi",
+      "source_url": "https://www.ecologie.gouv.fr/",
+      "study_date": "2026-08-28",
+      "starred": false
+    },
+    {
+      "id": 62,
+      "category": "community",
+      "word": "accessibilité",
+      "part_of_speech": "nom féminin",
+      "definition_fr": "possibilité d'accéder facilement à un lieu ou service",
+      "definition_zh": "无障碍；可及性",
+      "example_fr": "L'accessibilité du bâtiment sera améliorée cette année.",
+      "example_zh": "今年将改善建筑的无障碍条件。",
+      "source_name": "Services publics",
+      "source_url": "https://www.service-public.fr/",
+      "study_date": "2026-08-28",
+      "starred": false
+    },
+    {
+      "id": 63,
+      "category": "community",
+      "word": "collecte",
+      "part_of_speech": "nom féminin",
+      "definition_fr": "ramassage organisé de dons ou de déchets",
+      "definition_zh": "收集；募捐",
+      "example_fr": "Une collecte de vêtements aura lieu devant la mairie.",
+      "example_zh": "市政府门前将举行衣物募集。",
+      "source_name": "Solidarité",
+      "source_url": "https://www.service-public.fr/",
+      "study_date": "2026-08-28",
+      "starred": false
+    },
+    {
+      "id": 64,
+      "category": "community",
+      "word": "covoiturage",
+      "part_of_speech": "nom masculin",
+      "definition_fr": "partage d'un trajet en voiture",
+      "definition_zh": "拼车",
+      "example_fr": "Le covoiturage facilite les déplacements depuis les villages voisins.",
+      "example_zh": "拼车方便了周边村庄的出行。",
+      "source_name": "Mobilités",
+      "source_url": "https://www.ecologie.gouv.fr/",
+      "study_date": "2026-08-28",
+      "starred": false
+    },
+    {
+      "id": 65,
+      "category": "community",
+      "word": "compostage",
+      "part_of_speech": "nom masculin",
+      "definition_fr": "transformation des déchets organiques en compost",
+      "definition_zh": "堆肥",
+      "example_fr": "Le compostage collectif diminue le volume des poubelles.",
+      "example_zh": "集体堆肥可减少垃圾量。",
+      "source_name": "Déchets",
+      "source_url": "https://www.ecologie.gouv.fr/",
+      "study_date": "2026-08-28",
+      "starred": false
+    },
+    {
+      "id": 66,
+      "category": "daily",
+      "word": "profiter",
+      "part_of_speech": "verbe",
+      "definition_fr": "tirer avantage d'une situation",
+      "definition_zh": "利用；享受",
+      "example_fr": "Profitons du soleil pour marcher.",
+      "example_zh": "趁着阳光好，我们去散步吧。",
+      "source_name": null,
+      "source_url": null,
+      "study_date": "2026-08-28",
+      "starred": false
+    },
+    {
+      "id": 67,
+      "category": "daily",
+      "word": "conseiller",
+      "part_of_speech": "verbe",
+      "definition_fr": "recommander une action",
+      "definition_zh": "建议",
+      "example_fr": "Le médecin lui conseille de se reposer.",
+      "example_zh": "医生建议他休息。",
+      "source_name": null,
+      "source_url": null,
+      "study_date": "2026-08-28",
+      "starred": false
+    },
+    {
+      "id": 68,
+      "category": "daily",
+      "word": "disponible",
+      "part_of_speech": "adjectif",
+      "definition_fr": "libre ou prêt à être utilisé",
+      "definition_zh": "有空的；可用的",
+      "example_fr": "Cette salle est disponible après quinze heures.",
+      "example_zh": "这个房间下午三点后可用。",
+      "source_name": null,
+      "source_url": null,
+      "study_date": "2026-08-28",
+      "starred": false
+    },
+    {
+      "id": 69,
+      "category": "daily",
+      "word": "prévoir",
+      "part_of_speech": "verbe",
+      "definition_fr": "organiser à l'avance",
+      "definition_zh": "预先安排",
+      "example_fr": "Nous prévoyons une solution en cas de pluie.",
+      "example_zh": "我们预先准备了下雨时的方案。",
+      "source_name": null,
+      "source_url": null,
+      "study_date": "2026-08-28",
+      "starred": false
+    },
+    {
+      "id": 70,
+      "category": "daily",
+      "word": "permettre",
+      "part_of_speech": "verbe",
+      "definition_fr": "rendre une action possible",
+      "definition_zh": "使能够；允许",
+      "example_fr": "Ce raccourci permet de gagner du temps.",
+      "example_zh": "这条捷径可以节省时间。",
+      "source_name": null,
+      "source_url": null,
+      "study_date": "2026-08-28",
+      "starred": false
+    },
+    {
+      "id": 51,
+      "category": "community",
+      "word": "rénovation",
+      "part_of_speech": "nom féminin",
+      "definition_fr": "travaux destinés à améliorer un bâtiment",
+      "definition_zh": "翻新；改造",
+      "example_fr": "La rénovation de l'école réduira sa consommation d'énergie.",
+      "example_zh": "学校改造将降低能源消耗。",
+      "source_name": "Bâtiments",
+      "source_url": "https://www.ecologie.gouv.fr/",
+      "study_date": "2026-08-27",
+      "starred": false
+    },
+    {
+      "id": 52,
+      "category": "community",
+      "word": "résilience",
+      "part_of_speech": "nom féminin",
+      "definition_fr": "capacité à faire face à une difficulté",
+      "definition_zh": "韧性；恢复力",
+      "example_fr": "La résilience du quartier dépend aussi de ses réseaux d'entraide.",
+      "example_zh": "社区韧性也取决于互助网络。",
+      "source_name": "Vie locale",
+      "source_url": "https://www.vie-publique.fr/",
+      "study_date": "2026-08-27",
+      "starred": true
+    },
+    {
+      "id": 53,
+      "category": "community",
+      "word": "mobilité",
+      "part_of_speech": "nom féminin",
+      "definition_fr": "manière de se déplacer sur un territoire",
+      "definition_zh": "出行；流动性",
+      "example_fr": "Le plan de mobilité encourage le vélo et la marche.",
+      "example_zh": "出行计划鼓励骑车和步行。",
+      "source_name": "Transports",
+      "source_url": "https://www.ecologie.gouv.fr/",
+      "study_date": "2026-08-27",
+      "starred": false
+    },
+    {
+      "id": 54,
+      "category": "community",
+      "word": "ressourcerie",
+      "part_of_speech": "nom féminin",
+      "definition_fr": "structure qui collecte et revend des objets réemployés",
+      "definition_zh": "资源再利用商店",
+      "example_fr": "La ressourcerie propose des objets réparés à prix modéré.",
+      "example_zh": "资源再利用商店以适中价格出售修复物品。",
+      "source_name": "Réemploi",
+      "source_url": "https://www.ecologie.gouv.fr/",
+      "study_date": "2026-08-27",
+      "starred": false
+    },
+    {
+      "id": 55,
+      "category": "community",
+      "word": "inclusion",
+      "part_of_speech": "nom féminin",
+      "definition_fr": "participation de chacun sans exclusion",
+      "definition_zh": "包容；融入",
+      "example_fr": "Le projet favorise l'inclusion des personnes isolées.",
+      "example_zh": "该项目促进孤立人群融入社会。",
+      "source_name": "Cohésion sociale",
+      "source_url": "https://www.vie-publique.fr/",
+      "study_date": "2026-08-27",
+      "starred": false
+    },
+    {
+      "id": 56,
+      "category": "daily",
+      "word": "se rendre",
+      "part_of_speech": "verbe pronominal",
+      "definition_fr": "aller dans un lieu",
+      "definition_zh": "前往",
+      "example_fr": "Elle se rend au travail à vélo.",
+      "example_zh": "她骑自行车去上班。",
+      "source_name": null,
+      "source_url": null,
+      "study_date": "2026-08-27",
+      "starred": true
+    },
+    {
+      "id": 57,
+      "category": "daily",
+      "word": "rappeler",
+      "part_of_speech": "verbe",
+      "definition_fr": "faire revenir une information à l'esprit",
+      "definition_zh": "提醒；使想起",
+      "example_fr": "Rappelle-moi de confirmer la réservation.",
+      "example_zh": "提醒我确认预订。",
+      "source_name": null,
+      "source_url": null,
+      "study_date": "2026-08-27",
+      "starred": false
+    },
+    {
+      "id": 58,
+      "category": "daily",
+      "word": "vérifier",
+      "part_of_speech": "verbe",
+      "definition_fr": "contrôler qu'une chose est correcte",
+      "definition_zh": "检查；核实",
+      "example_fr": "Vérifie l'adresse avant de partir.",
+      "example_zh": "出发前核实一下地址。",
+      "source_name": null,
+      "source_url": null,
+      "study_date": "2026-08-27",
+      "starred": false
+    },
+    {
+      "id": 59,
+      "category": "daily",
+      "word": "améliorer",
+      "part_of_speech": "verbe",
+      "definition_fr": "rendre meilleur",
+      "definition_zh": "改善",
+      "example_fr": "Cette habitude améliore ma concentration.",
+      "example_zh": "这个习惯改善了我的专注力。",
+      "source_name": null,
+      "source_url": null,
+      "study_date": "2026-08-27",
+      "starred": false
+    },
+    {
+      "id": 60,
+      "category": "daily",
+      "word": "reporter",
+      "part_of_speech": "verbe",
+      "definition_fr": "remettre à une date ultérieure",
+      "definition_zh": "推迟",
+      "example_fr": "Ils ont reporté la réunion à vendredi.",
+      "example_zh": "他们把会议推迟到周五。",
+      "source_name": null,
+      "source_url": null,
+      "study_date": "2026-08-27",
+      "starred": true
+    },
+    {
+      "id": 41,
+      "category": "community",
+      "word": "signalement",
+      "part_of_speech": "nom masculin",
+      "definition_fr": "action d'indiquer un problème",
+      "definition_zh": "报告；举报",
+      "example_fr": "La mairie a reçu plusieurs signalements concernant l'éclairage.",
+      "example_zh": "市政府收到了多起有关照明问题的报告。",
+      "source_name": "Services locaux",
+      "source_url": "https://www.service-public.fr/",
+      "study_date": "2026-08-26",
+      "starred": true
+    },
+    {
+      "id": 42,
+      "category": "community",
+      "word": "abordable",
+      "part_of_speech": "adjectif",
+      "definition_fr": "dont le prix reste accessible",
+      "definition_zh": "负担得起的",
+      "example_fr": "Les étudiants demandent des logements plus abordables.",
+      "example_zh": "学生希望有更负担得起的住房。",
+      "source_name": "Communauté étudiante",
+      "source_url": "https://www.etudiant.gouv.fr/",
+      "study_date": "2026-08-26",
+      "starred": false
+    },
+    {
+      "id": 43,
+      "category": "community",
+      "word": "pénurie",
+      "part_of_speech": "nom féminin",
+      "definition_fr": "manque important d'une ressource",
+      "definition_zh": "短缺",
+      "example_fr": "La commune cherche des solutions face à la pénurie de logements.",
+      "example_zh": "市镇正在寻找应对住房短缺的办法。",
+      "source_name": "Actualité locale",
+      "source_url": "https://www.france24.com/fr/",
+      "study_date": "2026-08-26",
+      "starred": false
+    },
+    {
+      "id": 44,
+      "category": "community",
+      "word": "entraide",
+      "part_of_speech": "nom féminin",
+      "definition_fr": "aide mutuelle",
+      "definition_zh": "互助",
+      "example_fr": "L'entraide entre voisins facilite la vie du quartier.",
+      "example_zh": "邻里互助让社区生活更轻松。",
+      "source_name": "Vie de quartier",
+      "source_url": "https://www.reddit.com/r/france/",
+      "study_date": "2026-08-26",
+      "starred": false
+    },
+    {
+      "id": 45,
+      "category": "community",
+      "word": "concertation",
+      "part_of_speech": "nom féminin",
+      "definition_fr": "discussion avant une décision collective",
+      "definition_zh": "协商",
+      "example_fr": "Une concertation est ouverte aux habitants du quartier.",
+      "example_zh": "一场面向街区居民的协商正在开展。",
+      "source_name": "Participation citoyenne",
+      "source_url": "https://www.vie-publique.fr/",
+      "study_date": "2026-08-26",
+      "starred": false
+    },
+    {
+      "id": 46,
+      "category": "daily",
+      "word": "prévenir",
+      "part_of_speech": "verbe",
+      "definition_fr": "informer à l'avance",
+      "definition_zh": "提前通知",
+      "example_fr": "Préviens-moi si tu arrives en retard.",
+      "example_zh": "如果你迟到，请提前告诉我。",
+      "source_name": null,
+      "source_url": null,
+      "study_date": "2026-08-26",
+      "starred": true
+    },
+    {
+      "id": 47,
+      "category": "daily",
+      "word": "ranger",
+      "part_of_speech": "verbe",
+      "definition_fr": "mettre en ordre",
+      "definition_zh": "整理",
+      "example_fr": "Je range mon bureau avant de travailler.",
+      "example_zh": "我工作前整理书桌。",
+      "source_name": null,
+      "source_url": null,
+      "study_date": "2026-08-26",
+      "starred": false
+    },
+    {
+      "id": 48,
+      "category": "daily",
+      "word": "réussir",
+      "part_of_speech": "verbe",
+      "definition_fr": "obtenir un bon résultat",
+      "definition_zh": "成功；通过",
+      "example_fr": "Elle travaille pour réussir l'examen.",
+      "example_zh": "她努力学习以通过考试。",
+      "source_name": null,
+      "source_url": null,
+      "study_date": "2026-08-26",
+      "starred": false
+    },
+    {
+      "id": 49,
+      "category": "daily",
+      "word": "accueillir",
+      "part_of_speech": "verbe",
+      "definition_fr": "recevoir une personne",
+      "definition_zh": "接待；欢迎",
+      "example_fr": "Nous accueillons des amis ce soir.",
+      "example_zh": "今晚我们接待朋友。",
+      "source_name": null,
+      "source_url": null,
+      "study_date": "2026-08-26",
+      "starred": false
+    },
+    {
+      "id": 50,
+      "category": "daily",
+      "word": "pourtant",
+      "part_of_speech": "adverbe",
+      "definition_fr": "marque une opposition",
+      "definition_zh": "然而",
+      "example_fr": "Il est fatigué, pourtant il continue.",
+      "example_zh": "他很累，然而仍在继续。",
+      "source_name": null,
+      "source_url": null,
+      "study_date": "2026-08-26",
+      "starred": true
+    },
+    {
+      "id": 31,
+      "category": "community",
+      "word": "essor",
+      "part_of_speech": "nom masculin",
+      "definition_fr": "développement rapide",
+      "definition_zh": "兴起；快速发展",
+      "example_fr": "L'essor du vélo transforme les déplacements urbains.",
+      "example_zh": "自行车的兴起正在改变城市出行。",
+      "source_name": "Mobilités urbaines",
+      "source_url": "https://www.francebleu.fr/",
+      "study_date": "2026-08-25",
+      "starred": true
+    },
+    {
+      "id": 32,
+      "category": "community",
+      "word": "sobriété",
+      "part_of_speech": "nom féminin",
+      "definition_fr": "réduction volontaire de la consommation",
+      "definition_zh": "节制；节约",
+      "example_fr": "La sobriété énergétique reste un sujet fréquent dans les discussions.",
+      "example_zh": "能源节制仍是讨论中的常见话题。",
+      "source_name": "Discussions publiques",
+      "source_url": "https://www.franceinfo.fr/",
+      "study_date": "2026-08-25",
+      "starred": true
+    },
+    {
+      "id": 33,
+      "category": "community",
+      "word": "réaménagement",
+      "part_of_speech": "nom masculin",
+      "definition_fr": "nouvelle organisation d'un espace",
+      "definition_zh": "重新规划",
+      "example_fr": "Le réaménagement de la place suscite un débat local.",
+      "example_zh": "广场重新规划引发了本地讨论。",
+      "source_name": "Débat municipal",
+      "source_url": "https://www.mairie.com/",
+      "study_date": "2026-08-25",
+      "starred": true
+    },
+    {
+      "id": 34,
+      "category": "community",
+      "word": "démarche",
+      "part_of_speech": "nom féminin",
+      "definition_fr": "action organisée pour obtenir un résultat",
+      "definition_zh": "流程；举措",
+      "example_fr": "Cette démarche citoyenne rassemble plusieurs associations.",
+      "example_zh": "这项公民行动汇集了多个协会。",
+      "source_name": "Vie associative",
+      "source_url": "https://www.service-public.fr/",
+      "study_date": "2026-08-25",
+      "starred": false
+    },
+    {
+      "id": 35,
+      "category": "community",
+      "word": "bénévole",
+      "part_of_speech": "nom",
+      "definition_fr": "personne qui agit sans être payée",
+      "definition_zh": "志愿者",
+      "example_fr": "Des bénévoles organisent une collecte ce week-end.",
+      "example_zh": "志愿者本周末组织募捐。",
+      "source_name": "Associations",
+      "source_url": "https://www.helloasso.com/",
+      "study_date": "2026-08-25",
+      "starred": false
+    },
+    {
+      "id": 36,
+      "category": "daily",
+      "word": "emprunter",
+      "part_of_speech": "verbe",
+      "definition_fr": "prendre pour rendre plus tard",
+      "definition_zh": "借入",
+      "example_fr": "Puis-je emprunter ce livre ?",
+      "example_zh": "我可以借这本书吗？",
+      "source_name": null,
+      "source_url": null,
+      "study_date": "2026-08-25",
+      "starred": false
+    },
+    {
+      "id": 37,
+      "category": "daily",
+      "word": "se dépêcher",
+      "part_of_speech": "verbe pronominal",
+      "definition_fr": "faire vite",
+      "definition_zh": "赶快",
+      "example_fr": "Dépêche-toi, le bus arrive !",
+      "example_zh": "快点，公交车来了！",
+      "source_name": null,
+      "source_url": null,
+      "study_date": "2026-08-25",
+      "starred": false
+    },
+    {
+      "id": 38,
+      "category": "daily",
+      "word": "quartier",
+      "part_of_speech": "nom masculin",
+      "definition_fr": "partie d'une ville",
+      "definition_zh": "街区",
+      "example_fr": "Mon quartier est calme le soir.",
+      "example_zh": "我的街区晚上很安静。",
+      "source_name": null,
+      "source_url": null,
+      "study_date": "2026-08-25",
+      "starred": false
+    },
+    {
+      "id": 39,
+      "category": "daily",
+      "word": "pratique",
+      "part_of_speech": "adjectif",
+      "definition_fr": "facile et utile",
+      "definition_zh": "实用的；方便的",
+      "example_fr": "Cette application est très pratique.",
+      "example_zh": "这个应用很实用。",
+      "source_name": null,
+      "source_url": null,
+      "study_date": "2026-08-25",
+      "starred": false
+    },
+    {
+      "id": 40,
+      "category": "daily",
+      "word": "habitude",
+      "part_of_speech": "nom féminin",
+      "definition_fr": "comportement répété",
+      "definition_zh": "习惯",
+      "example_fr": "Lire le matin est une bonne habitude.",
+      "example_zh": "早上阅读是一个好习惯。",
+      "source_name": null,
+      "source_url": null,
+      "study_date": "2026-08-25",
+      "starred": false
+    },
+    {
+      "id": 21,
+      "category": "community",
+      "word": "entraide",
+      "part_of_speech": "nom féminin",
+      "definition_fr": "aide mutuelle",
+      "definition_zh": "互助",
+      "example_fr": "L'entraide entre voisins facilite la vie du quartier.",
+      "example_zh": "邻里互助让社区生活更轻松。",
+      "source_name": "Vie de quartier",
+      "source_url": "https://www.reddit.com/r/france/",
+      "study_date": "2026-08-24",
+      "starred": false
+    },
+    {
+      "id": 22,
+      "category": "community",
+      "word": "pénurie",
+      "part_of_speech": "nom féminin",
+      "definition_fr": "manque important d'une ressource",
+      "definition_zh": "短缺",
+      "example_fr": "La commune cherche des solutions face à la pénurie de logements.",
+      "example_zh": "市镇正在寻找应对住房短缺的办法。",
+      "source_name": "Actualité locale",
+      "source_url": "https://www.france24.com/fr/",
+      "study_date": "2026-08-24",
+      "starred": false
+    },
+    {
+      "id": 23,
+      "category": "community",
+      "word": "signalement",
+      "part_of_speech": "nom masculin",
+      "definition_fr": "action d'indiquer un problème",
+      "definition_zh": "报告；举报",
+      "example_fr": "La mairie a reçu plusieurs signalements concernant l'éclairage.",
+      "example_zh": "市政府收到了多起有关照明问题的报告。",
+      "source_name": "Services locaux",
+      "source_url": "https://www.service-public.fr/",
+      "study_date": "2026-08-24",
+      "starred": true
+    },
+    {
+      "id": 24,
+      "category": "community",
+      "word": "abordable",
+      "part_of_speech": "adjectif",
+      "definition_fr": "dont le prix reste accessible",
+      "definition_zh": "负担得起的",
+      "example_fr": "Les étudiants demandent des logements plus abordables.",
+      "example_zh": "学生希望有更负担得起的住房。",
+      "source_name": "Communauté étudiante",
+      "source_url": "https://www.etudiant.gouv.fr/",
+      "study_date": "2026-08-24",
+      "starred": false
+    },
+    {
+      "id": 25,
+      "category": "community",
+      "word": "concertation",
+      "part_of_speech": "nom féminin",
+      "definition_fr": "discussion avant une décision collective",
+      "definition_zh": "协商",
+      "example_fr": "Une concertation est ouverte aux habitants du quartier.",
+      "example_zh": "一场面向街区居民的协商正在开展。",
+      "source_name": "Participation citoyenne",
+      "source_url": "https://www.vie-publique.fr/",
+      "study_date": "2026-08-24",
+      "starred": false
+    },
+    {
+      "id": 26,
+      "category": "daily",
+      "word": "pourtant",
+      "part_of_speech": "adverbe",
+      "definition_fr": "marque une opposition",
+      "definition_zh": "然而",
+      "example_fr": "Il est fatigué, pourtant il continue.",
+      "example_zh": "他很累，然而仍在继续。",
+      "source_name": null,
+      "source_url": null,
+      "study_date": "2026-08-24",
+      "starred": true
+    },
+    {
+      "id": 27,
+      "category": "daily",
+      "word": "accueillir",
+      "part_of_speech": "verbe",
+      "definition_fr": "recevoir une personne",
+      "definition_zh": "接待；欢迎",
+      "example_fr": "Nous accueillons des amis ce soir.",
+      "example_zh": "今晚我们接待朋友。",
+      "source_name": null,
+      "source_url": null,
+      "study_date": "2026-08-24",
+      "starred": false
+    },
+    {
+      "id": 28,
+      "category": "daily",
+      "word": "ranger",
+      "part_of_speech": "verbe",
+      "definition_fr": "mettre en ordre",
+      "definition_zh": "整理",
+      "example_fr": "Je range mon bureau avant de travailler.",
+      "example_zh": "我工作前整理书桌。",
+      "source_name": null,
+      "source_url": null,
+      "study_date": "2026-08-24",
+      "starred": false
+    },
+    {
+      "id": 29,
+      "category": "daily",
+      "word": "prévenir",
+      "part_of_speech": "verbe",
+      "definition_fr": "informer à l'avance",
+      "definition_zh": "提前通知",
+      "example_fr": "Préviens-moi si tu arrives en retard.",
+      "example_zh": "如果你迟到，请提前告诉我。",
+      "source_name": null,
+      "source_url": null,
+      "study_date": "2026-08-24",
+      "starred": true
+    },
+    {
+      "id": 30,
+      "category": "daily",
+      "word": "réussir",
+      "part_of_speech": "verbe",
+      "definition_fr": "obtenir un bon résultat",
+      "definition_zh": "成功；通过",
+      "example_fr": "Elle travaille pour réussir l'examen.",
+      "example_zh": "她努力学习以通过考试。",
+      "source_name": null,
+      "source_url": null,
+      "study_date": "2026-08-24",
+      "starred": false
+    },
+    {
+      "id": 1,
+      "category": "community",
+      "word": "ambassadeur",
+      "part_of_speech": "nom masculin",
+      "definition_fr": "Représentant officiel d'un État auprès d'un autre État ou d'une organisation internationale.",
+      "definition_zh": "一个国家派驻另一个国家或国际组织的正式代表。",
+      "example_fr": "L'ambassadeur français a rencontré le président hier.",
+      "example_zh": "法国大使昨天会见了总统。",
+      "source_name": "r/france",
+      "source_url": "https://www.reddit.com/r/france/comments/1vw2fvr/lappel_de_102_anciens_ambassadeurs_français_et/",
+      "study_date": "2026-08-23",
+      "starred": false
+    },
+    {
+      "id": 2,
+      "category": "community",
+      "word": "budget",
+      "part_of_speech": "nom masculin",
+      "definition_fr": "Document financier qui prévoit les recettes et les dépenses d'une organisation ou d'un État.",
+      "definition_zh": "预算，一个组织或国家的财政文件，预测收入和支出。",
+      "example_fr": "Le gouvernement a présenté son budget pour l'année prochaine.",
+      "example_zh": "政府已经公布了明年的预算。",
+      "source_name": "r/france",
+      "source_url": "https://www.reddit.com/r/france/comments/1vw2qyh/rentrée_politique_jeanluc_mélenchon_promet_de/",
+      "study_date": "2026-08-23",
+      "starred": false
+    },
+    {
+      "id": 3,
+      "category": "community",
+      "word": "candidat",
+      "part_of_speech": "nom masculin",
+      "definition_fr": "Personne qui se présente à une élection ou à un poste.",
+      "definition_zh": "候选人，参与选举或职位竞选的人。",
+      "example_fr": "Le candidat a fait un discours devant ses partisans.",
+      "example_zh": "候选人在支持者面前发表了演讲。",
+      "source_name": "r/france",
+      "source_url": "https://www.reddit.com/r/france/comments/1vw0njh/political_candidate_jake_lang_arrested_after/",
+      "study_date": "2026-08-23",
+      "starred": false
+    },
+    {
+      "id": 4,
+      "category": "community",
+      "word": "négociation",
+      "part_of_speech": "nom féminin",
+      "definition_fr": "Processus de discussion entre plusieurs parties pour parvenir à un accord.",
+      "definition_zh": "谈判，多方之间为达成协议而进行的讨论过程。",
+      "example_fr": "Les négociations commerciales entre les deux pays ont duré des mois.",
+      "example_zh": "两国之间的贸易谈判持续了数月。",
+      "source_name": "r/france",
+      "source_url": "https://www.reddit.com/r/france/comments/1vvjf3c/déclaration_du_premier_ministre_carney_sur_les/",
+      "study_date": "2026-08-23",
+      "starred": false
+    },
+    {
+      "id": 5,
+      "category": "community",
+      "word": "réseau",
+      "part_of_speech": "nom masculin",
+      "definition_fr": "Groupe de personnes ou d'organisations reliées entre elles pour un objectif commun.",
+      "definition_zh": "网络，为共同目标而相互联系的人或组织群体。",
+      "example_fr": "Ce réseau de hauts fonctionnaires œuvre en secret.",
+      "example_zh": "这个高级公务员网络在暗中行动。",
+      "source_name": "r/france",
+      "source_url": "https://www.reddit.com/r/france/comments/1vvhalq/nous_sommes_présents_dans_tous_les_ministères/",
+      "study_date": "2026-08-23",
+      "starred": false
+    },
+    {
+      "id": 6,
+      "category": "daily",
+      "word": "réussir",
+      "part_of_speech": "verbe",
+      "definition_fr": "Atteindre un résultat positif ou accomplir quelque chose avec succès.",
+      "definition_zh": "成功，达到积极的结果或成功完成某事。",
+      "example_fr": "Elle a réussi son examen de français.",
+      "example_zh": "她通过了法语考试。",
+      "source_name": null,
+      "source_url": null,
+      "study_date": "2026-08-23",
+      "starred": false
+    },
+    {
+      "id": 7,
+      "category": "daily",
+      "word": "attention",
+      "part_of_speech": "nom féminin",
+      "definition_fr": "État de vigilance ou de concentration sur quelque chose ou quelqu'un.",
+      "definition_zh": "注意，对某事或某人的警惕或专注状态。",
+      "example_fr": "Fais attention en traversant la rue.",
+      "example_zh": "过马路时要小心。",
+      "source_name": null,
+      "source_url": null,
+      "study_date": "2026-08-23",
+      "starred": false
+    },
+    {
+      "id": 8,
+      "category": "daily",
+      "word": "délai",
+      "part_of_speech": "nom masculin",
+      "definition_fr": "Période de temps accordée pour faire quelque chose.",
+      "definition_zh": "期限，完成某事所给的时间段。",
+      "example_fr": "Il a un délai de deux semaines pour rendre son rapport.",
+      "example_zh": "他有两周的时间来提交报告。",
+      "source_name": null,
+      "source_url": null,
+      "study_date": "2026-08-23",
+      "starred": true
+    },
+    {
+      "id": 9,
+      "category": "daily",
+      "word": "rêver",
+      "part_of_speech": "verbe",
+      "definition_fr": "Imaginer ou souhaiter quelque chose de manière intense, souvent pendant le sommeil.",
+      "definition_zh": "做梦，强烈地想象或渴望某事，通常在睡眠中。",
+      "example_fr": "Je rêve de voyager autour du monde.",
+      "example_zh": "我梦想环游世界。",
+      "source_name": null,
+      "source_url": null,
+      "study_date": "2026-08-23",
+      "starred": false
+    },
+    {
+      "id": 10,
+      "category": "daily",
+      "word": "vigilance",
+      "part_of_speech": "nom féminin",
+      "definition_fr": "Qualité de quelqu'un qui est attentif et prudent.",
+      "definition_zh": "警惕，某人专注和谨慎的品质。",
+      "example_fr": "La vigilance est importante quand on conduit.",
+      "example_zh": "开车时警惕很重要。",
+      "source_name": null,
+      "source_url": null,
+      "study_date": "2026-08-23",
+      "starred": false
+    },
+    {
+      "id": 11,
+      "category": "community",
+      "word": "pénurie",
+      "part_of_speech": "nom féminin",
+      "definition_fr": "manque important d'une ressource",
+      "definition_zh": "短缺",
+      "example_fr": "La commune cherche des solutions face à la pénurie de logements.",
+      "example_zh": "市镇正在寻找应对住房短缺的办法。",
+      "source_name": "Actualité locale",
+      "source_url": "https://www.france24.com/fr/",
+      "study_date": "2026-08-22",
+      "starred": false
+    },
+    {
+      "id": 12,
+      "category": "community",
+      "word": "entraide",
+      "part_of_speech": "nom féminin",
+      "definition_fr": "aide mutuelle",
+      "definition_zh": "互助",
+      "example_fr": "L'entraide entre voisins facilite la vie du quartier.",
+      "example_zh": "邻里互助让社区生活更轻松。",
+      "source_name": "Vie de quartier",
+      "source_url": "https://www.reddit.com/r/france/",
+      "study_date": "2026-08-22",
+      "starred": false
+    },
+    {
+      "id": 13,
+      "category": "community",
+      "word": "concertation",
+      "part_of_speech": "nom féminin",
+      "definition_fr": "discussion avant une décision collective",
+      "definition_zh": "协商",
+      "example_fr": "Une concertation est ouverte aux habitants du quartier.",
+      "example_zh": "一场面向街区居民的协商正在开展。",
+      "source_name": "Participation citoyenne",
+      "source_url": "https://www.vie-publique.fr/",
+      "study_date": "2026-08-22",
+      "starred": false
+    },
+    {
+      "id": 14,
+      "category": "community",
+      "word": "abordable",
+      "part_of_speech": "adjectif",
+      "definition_fr": "dont le prix reste accessible",
+      "definition_zh": "负担得起的",
+      "example_fr": "Les étudiants demandent des logements plus abordables.",
+      "example_zh": "学生希望有更负担得起的住房。",
+      "source_name": "Communauté étudiante",
+      "source_url": "https://www.etudiant.gouv.fr/",
+      "study_date": "2026-08-22",
+      "starred": false
+    },
+    {
+      "id": 15,
+      "category": "community",
+      "word": "signalement",
+      "part_of_speech": "nom masculin",
+      "definition_fr": "action d'indiquer un problème",
+      "definition_zh": "报告；举报",
+      "example_fr": "La mairie a reçu plusieurs signalements concernant l'éclairage.",
+      "example_zh": "市政府收到了多起有关照明问题的报告。",
+      "source_name": "Services locaux",
+      "source_url": "https://www.service-public.fr/",
+      "study_date": "2026-08-22",
+      "starred": true
+    },
+    {
+      "id": 16,
+      "category": "daily",
+      "word": "habitude",
+      "part_of_speech": "nom féminin",
+      "definition_fr": "comportement répété",
+      "definition_zh": "习惯",
+      "example_fr": "Lire le matin est une bonne habitude.",
+      "example_zh": "早上阅读是一个好习惯。",
+      "source_name": null,
+      "source_url": null,
+      "study_date": "2026-08-22",
+      "starred": false
+    },
+    {
+      "id": 17,
+      "category": "daily",
+      "word": "prévenir",
+      "part_of_speech": "verbe",
+      "definition_fr": "informer à l'avance",
+      "definition_zh": "提前通知",
+      "example_fr": "Préviens-moi si tu arrives en retard.",
+      "example_zh": "如果你迟到，请提前告诉我。",
+      "source_name": null,
+      "source_url": null,
+      "study_date": "2026-08-22",
+      "starred": true
+    },
+    {
+      "id": 18,
+      "category": "daily",
+      "word": "accueillir",
+      "part_of_speech": "verbe",
+      "definition_fr": "recevoir une personne",
+      "definition_zh": "接待；欢迎",
+      "example_fr": "Nous accueillons des amis ce soir.",
+      "example_zh": "今晚我们接待朋友。",
+      "source_name": null,
+      "source_url": null,
+      "study_date": "2026-08-22",
+      "starred": false
+    },
+    {
+      "id": 19,
+      "category": "daily",
+      "word": "ranger",
+      "part_of_speech": "verbe",
+      "definition_fr": "mettre en ordre",
+      "definition_zh": "整理",
+      "example_fr": "Je range mon bureau avant de travailler.",
+      "example_zh": "我工作前整理书桌。",
+      "source_name": null,
+      "source_url": null,
+      "study_date": "2026-08-22",
+      "starred": false
+    },
+    {
+      "id": 20,
+      "category": "daily",
+      "word": "pourtant",
+      "part_of_speech": "adverbe",
+      "definition_fr": "marque une opposition",
+      "definition_zh": "然而",
+      "example_fr": "Il est fatigué, pourtant il continue.",
+      "example_zh": "他很累，然而仍在继续。",
+      "source_name": null,
+      "source_url": null,
+      "study_date": "2026-08-22",
+      "starred": true
+    }
+  ]
+}

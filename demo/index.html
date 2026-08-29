@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#183153">
+  <meta name="description" content="Interactive sample-data demo of Mon français Coach, a private local-first French learning application.">
+  <title>Mon français Coach — Live Demo</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="demo.css">
+</head>
+<body>
+  <aside class="demo-banner" aria-label="Mode démonstration">
+    <strong>Live Demo</strong>
+    <span>Sample data only · no account, API key, or learning data is stored</span>
+    <a href="https://github.com/RichradsY/mon-francais-coach" target="_blank" rel="noreferrer">Run it locally ↗</a>
+  </aside>
+  <a class="skip-link" href="#content">Aller au contenu</a>
+  <header class="topbar">
+    <div class="brand"><span class="brand-mark" aria-hidden="true">fr</span><span>Mon français Coach</span></div>
+    <nav aria-label="Navigation principale">
+      <button class="nav-item active" data-view="today">Aujourd’hui</button>
+      <button class="nav-item" data-view="reading">Lecture</button>
+      <button class="nav-item" data-view="writing">Écriture</button>
+      <button class="nav-item" data-view="review">Erreurs & grammaire</button>
+      <button class="nav-item" data-view="vocabulary">Vocabulaire</button>
+      <button class="nav-item" data-view="history">Historique</button>
+    </nav>
+  </header>
+  <main id="content" tabindex="-1">
+    <div id="status" class="status" role="status" aria-live="polite">Chargement de la démonstration…</div>
+    <section id="view" aria-live="polite"></section>
+  </main>
+  <footer>Mode démonstration · Données fictives et exemple d’écriture publié avec autorisation</footer>
+  <script src="demo-api.js" defer></script>
+  <script src="app.js" defer></script>
+  <script src="demo-runtime.js" defer></script>
+</body>
+</html>
