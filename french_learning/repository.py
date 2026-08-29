@@ -4,6 +4,7 @@ from __future__ import annotations
 import json
 import sqlite3
 import threading
+import unicodedata
 from contextlib import contextmanager
 from datetime import datetime
 from pathlib import Path
@@ -31,7 +32,9 @@ class Repository:
         CREATE TABLE IF NOT EXISTS daily_sessions (
             id INTEGER PRIMARY KEY, study_date TEXT NOT NULL UNIQUE,
             status TEXT NOT NULL DEFAULT 'ready', generated_at TEXT NOT NULL,
-            submitted_at TEXT, score INTEGER, content_source TEXT NOT NULL DEFAULT 'offline'
+            submitted_at TEXT, score INTEGER, content_source TEXT NOT NULL DEFAULT 'offline',
+            started_at TEXT, question_deadline_at TEXT,
+            current_position INTEGER NOT NULL DEFAULT 0
         );
         CREATE TABLE IF NOT EXISTS questions (
             id INTEGER PRIMARY KEY, session_id INTEGER NOT NULL REFERENCES daily_sessions(id) ON DELETE CASCADE,
@@ -46,6 +49,7 @@ class Repository:
             id INTEGER PRIMARY KEY, session_id INTEGER NOT NULL REFERENCES daily_sessions(id) ON DELETE CASCADE,
             question_id INTEGER NOT NULL REFERENCES questions(id) ON DELETE CASCADE,
             user_answer TEXT NOT NULL, is_correct INTEGER NOT NULL, graded_at TEXT NOT NULL,
+            timed_out INTEGER NOT NULL DEFAULT 0,
             UNIQUE(session_id, question_id)
         );
         CREATE TABLE IF NOT EXISTS vocabulary (
@@ -54,6 +58,9 @@ class Repository:
             definition_fr TEXT NOT NULL, definition_zh TEXT NOT NULL,
             example_fr TEXT NOT NULL, example_zh TEXT NOT NULL,
             source_name TEXT, source_url TEXT
+        );
+        CREATE TABLE IF NOT EXISTS vocabulary_stars (
+            word_key TEXT PRIMARY KEY, display_word TEXT NOT NULL, starred_at TEXT NOT NULL
         );
         CREATE TABLE IF NOT EXISTS grammar_points (
             grammar_key TEXT PRIMARY KEY, title_fr TEXT NOT NULL, explanation_fr TEXT NOT NULL,
@@ -70,6 +77,7 @@ class Repository:
             content_json TEXT NOT NULL, source_name TEXT, source_url TEXT,
             content_source TEXT NOT NULL DEFAULT 'offline', generated_at TEXT NOT NULL,
             started_at TEXT, deadline_at TEXT, submitted_at TEXT, score INTEGER,
+            pending_answer_text TEXT, grading_started_at TEXT, grading_error TEXT,
             UNIQUE(study_date, task_type)
         );
         CREATE TABLE IF NOT EXISTS task_submissions (
@@ -89,6 +97,15 @@ class Repository:
         columns = {row[1] for row in self.connection.execute("PRAGMA table_info(daily_sessions)")}
         if "content_source" not in columns:
             self.connection.execute("ALTER TABLE daily_sessions ADD COLUMN content_source TEXT NOT NULL DEFAULT 'offline'")
+        if "started_at" not in columns:
+            self.connection.execute("ALTER TABLE daily_sessions ADD COLUMN started_at TEXT")
+        if "question_deadline_at" not in columns:
+            self.connection.execute("ALTER TABLE daily_sessions ADD COLUMN question_deadline_at TEXT")
+        if "current_position" not in columns:
+            self.connection.execute("ALTER TABLE daily_sessions ADD COLUMN current_position INTEGER NOT NULL DEFAULT 0")
+        response_columns = {row[1] for row in self.connection.execute("PRAGMA table_info(responses)")}
+        if "timed_out" not in response_columns:
+            self.connection.execute("ALTER TABLE responses ADD COLUMN timed_out INTEGER NOT NULL DEFAULT 0")
         usage_columns = {row[1] for row in self.connection.execute("PRAGMA table_info(api_usage)")}
         if "request_count" not in usage_columns:
             self.connection.execute("ALTER TABLE api_usage ADD COLUMN request_count INTEGER NOT NULL DEFAULT 1")
@@ -98,6 +115,12 @@ class Repository:
             self.connection.execute("ALTER TABLE learning_tasks ADD COLUMN started_at TEXT")
         if "deadline_at" not in task_columns:
             self.connection.execute("ALTER TABLE learning_tasks ADD COLUMN deadline_at TEXT")
+        if "pending_answer_text" not in task_columns:
+            self.connection.execute("ALTER TABLE learning_tasks ADD COLUMN pending_answer_text TEXT")
+        if "grading_started_at" not in task_columns:
+            self.connection.execute("ALTER TABLE learning_tasks ADD COLUMN grading_started_at TEXT")
+        if "grading_error" not in task_columns:
+            self.connection.execute("ALTER TABLE learning_tasks ADD COLUMN grading_error TEXT")
         self.connection.executemany(
             "INSERT OR IGNORE INTO grammar_points VALUES (?, ?, ?, ?, ?)",
             [(key, *value) for key, value in GRAMMAR.items()],
@@ -149,6 +172,48 @@ class Repository:
             params = (limit,)
         return [row[0] for row in self.connection.execute(query, params)]
 
+    def recent_writing_topics(self, limit=20):
+        query = """
+            SELECT title, content_json FROM learning_tasks
+            WHERE task_type = 'writing' ORDER BY study_date DESC
+        """
+        params = ()
+        if limit is not None:
+            query += " LIMIT ?"
+            params = (limit,)
+        topics = []
+        for row in self.connection.execute(query, params):
+            content = json.loads(row["content_json"])
+            topics.append({
+                "title": row["title"],
+                "context_fr": content.get("context_fr", ""),
+                "instructions_fr": content.get("instructions_fr", ""),
+            })
+        return topics
+
+    def recent_reading_topics(self, limit=5):
+        query = """
+            SELECT title, content_json FROM learning_tasks
+            WHERE task_type = 'reading' ORDER BY study_date DESC
+        """
+        params = ()
+        if limit is not None:
+            query += " LIMIT ?"
+            params = (limit,)
+        topics = []
+        for row in self.connection.execute(query, params):
+            content = json.loads(row["content_json"])
+            topics.append({
+                "title": row["title"],
+                "article_fr": content.get("article_fr", ""),
+                "questions": [
+                    question.get("prompt", "")
+                    for question in content.get("questions", [])
+                    if isinstance(question, dict)
+                ],
+            })
+        return topics
+
     def recent_words(self, limit=80):
         query = """
             SELECT v.word FROM vocabulary v JOIN daily_sessions s ON s.id = v.session_id
@@ -199,12 +264,14 @@ class Repository:
             with self.connection:
                 self.connection.execute(
                     """UPDATE api_usage
-                       SET model = ?, prompt_tokens = ?, completion_tokens = ?
+                       SET model = ?, prompt_tokens = ?, completion_tokens = ?,
+                           request_count = ?
                        WHERE id = ?""",
                     (
                         usage["model"],
                         usage["prompt_tokens"],
                         usage["completion_tokens"],
+                        usage.get("request_count", 1),
                         usage_id,
                     ),
                 )
@@ -250,10 +317,14 @@ class Repository:
             item = dict(row)
             for field in ("options_json", "accepted_json", "option_explanations_json"):
                 item[field.removesuffix("_json")] = json.loads(item.pop(field))
-            response = self.connection.execute("SELECT user_answer, is_correct FROM responses WHERE question_id = ?", (item["id"],)).fetchone()
+            response = self.connection.execute(
+                "SELECT user_answer, is_correct, timed_out FROM responses WHERE question_id = ?",
+                (item["id"],),
+            ).fetchone()
             if response:
                 item["user_answer"] = response["user_answer"]
                 item["is_correct"] = bool(response["is_correct"])
+                item["timed_out"] = bool(response["timed_out"])
             questions.append(item)
         result["questions"] = questions
         result["vocabulary"] = [dict(row) for row in self.connection.execute("SELECT * FROM vocabulary WHERE session_id = ? ORDER BY category, id", (session_id,))]
@@ -279,6 +350,80 @@ class Repository:
                 (now, score, session_id),
             )
         return score
+
+    def start_daily(self, session_id, started_at, deadline_at):
+        with self._connection_lock:
+            with self.connection:
+                cursor = self.connection.execute(
+                    """UPDATE daily_sessions
+                       SET status = 'in_progress', started_at = ?,
+                           question_deadline_at = ?, current_position = 1
+                       WHERE id = ? AND status = 'ready'""",
+                    (started_at, deadline_at, session_id),
+                )
+        return cursor.rowcount == 1
+
+    def advance_daily(
+        self,
+        session_id,
+        question_id,
+        user_answer,
+        is_correct,
+        timed_out,
+        graded_at,
+        next_deadline_at,
+    ):
+        with self._connection_lock:
+            with self.connection:
+                current = self.connection.execute(
+                    """SELECT s.status, s.current_position, q.position
+                       FROM daily_sessions s JOIN questions q ON q.session_id = s.id
+                       WHERE s.id = ? AND q.id = ?""",
+                    (session_id, question_id),
+                ).fetchone()
+                if (
+                    not current
+                    or current["status"] != "in_progress"
+                    or current["position"] != current["current_position"]
+                ):
+                    return None
+                self.connection.execute(
+                    """INSERT INTO responses(
+                        session_id, question_id, user_answer, is_correct, graded_at, timed_out
+                    ) VALUES (?, ?, ?, ?, ?, ?)""",
+                    (
+                        session_id,
+                        question_id,
+                        user_answer,
+                        int(is_correct),
+                        graded_at,
+                        int(timed_out),
+                    ),
+                )
+                question_count = self.connection.execute(
+                    "SELECT COUNT(*) FROM questions WHERE session_id = ?", (session_id,)
+                ).fetchone()[0]
+                if current["current_position"] >= question_count:
+                    score = self.connection.execute(
+                        "SELECT COALESCE(SUM(is_correct), 0) FROM responses WHERE session_id = ?",
+                        (session_id,),
+                    ).fetchone()[0]
+                    self.connection.execute(
+                        """UPDATE daily_sessions
+                           SET status = 'completed', submitted_at = ?, score = ?,
+                               question_deadline_at = NULL
+                           WHERE id = ?""",
+                        (graded_at, score, session_id),
+                    )
+                    return "completed"
+                self.connection.execute(
+                    """UPDATE daily_sessions
+                       SET current_position = current_position + 1,
+                           question_deadline_at = ?
+                       WHERE id = ?""",
+                    (next_deadline_at, session_id),
+                )
+                return "advanced"
 
     def create_learning_tasks(self, study_date, reading, writing, content_source="offline"):
         now = datetime.now().astimezone().isoformat(timespec="seconds")
@@ -375,56 +520,79 @@ class Repository:
     def submit_writing(self, task_id, answer_text, feedback):
         now = datetime.now().astimezone().isoformat(timespec="seconds")
         score = feedback["score_total"]
-        with self.connection:
-            current = self.connection.execute(
-                "SELECT status FROM learning_tasks WHERE id = ? AND task_type = 'writing'",
-                (task_id,),
-            ).fetchone()
-            if not current or current["status"] != "grading":
-                return None
-            cursor = self.connection.execute(
-                "INSERT INTO task_submissions(task_id, answer_text, feedback_json, submitted_at, score) VALUES (?, ?, ?, ?, ?)",
-                (task_id, answer_text, json.dumps(feedback, ensure_ascii=False), now, score),
-            )
-            self.connection.executemany(
-                """INSERT INTO writing_errors(
-                    submission_id, grammar_key, original_text, correction,
-                    explanation_fr, explanation_zh
-                ) VALUES (?, ?, ?, ?, ?, ?)""",
-                [
-                    (
-                        cursor.lastrowid,
-                        item["grammar_key"],
-                        item["original"],
-                        item["correction"],
-                        item["explanation_fr"],
-                        item["explanation_zh"],
-                    )
-                    for item in feedback["errors"]
-                ],
-            )
-            self.connection.execute(
-                "UPDATE learning_tasks SET status = 'completed', submitted_at = ?, score = ? WHERE id = ?",
-                (now, score, task_id),
-            )
+        with self._connection_lock:
+            with self.connection:
+                current = self.connection.execute(
+                    "SELECT status FROM learning_tasks WHERE id = ? AND task_type = 'writing'",
+                    (task_id,),
+                ).fetchone()
+                if not current or current["status"] != "grading":
+                    return None
+                cursor = self.connection.execute(
+                    "INSERT INTO task_submissions(task_id, answer_text, feedback_json, submitted_at, score) VALUES (?, ?, ?, ?, ?)",
+                    (task_id, answer_text, json.dumps(feedback, ensure_ascii=False), now, score),
+                )
+                self.connection.executemany(
+                    """INSERT INTO writing_errors(
+                        submission_id, grammar_key, original_text, correction,
+                        explanation_fr, explanation_zh
+                    ) VALUES (?, ?, ?, ?, ?, ?)""",
+                    [
+                        (
+                            cursor.lastrowid,
+                            item["grammar_key"],
+                            item["original"],
+                            item["correction"],
+                            item["explanation_fr"],
+                            item["explanation_zh"],
+                        )
+                        for item in feedback["errors"]
+                    ],
+                )
+                self.connection.execute(
+                    """UPDATE learning_tasks
+                       SET status = 'completed', submitted_at = ?, score = ?,
+                           pending_answer_text = NULL, grading_started_at = NULL,
+                           grading_error = NULL
+                       WHERE id = ?""",
+                    (now, score, task_id),
+                )
         return score
 
-    def claim_writing_task(self, task_id):
+    def claim_writing_task(self, task_id, answer_text):
+        now = datetime.now().astimezone().isoformat(timespec="seconds")
         with self._connection_lock:
             with self.connection:
                 cursor = self.connection.execute(
-                    "UPDATE learning_tasks SET status = 'grading' WHERE id = ? AND task_type = 'writing' AND status = 'ready'",
-                    (task_id,),
+                    """UPDATE learning_tasks
+                       SET status = 'grading', pending_answer_text = ?,
+                           grading_started_at = ?, grading_error = NULL
+                       WHERE id = ? AND task_type = 'writing' AND status = 'ready'""",
+                    (answer_text, now, task_id),
                 )
         return cursor.rowcount == 1
 
-    def release_writing_task(self, task_id):
+    def release_writing_task(self, task_id, error=None):
         with self._connection_lock:
             with self.connection:
                 self.connection.execute(
-                    "UPDATE learning_tasks SET status = 'ready' WHERE id = ? AND task_type = 'writing' AND status = 'grading'",
-                    (task_id,),
+                    """UPDATE learning_tasks
+                       SET status = 'ready', grading_started_at = NULL,
+                           grading_error = ?
+                       WHERE id = ? AND task_type = 'writing' AND status = 'grading'""",
+                    (error, task_id),
                 )
+
+    def pending_writing_tasks(self):
+        with self._connection_lock:
+            return [
+                dict(row)
+                for row in self.connection.execute(
+                    """SELECT id FROM learning_tasks
+                       WHERE task_type = 'writing' AND status = 'grading'
+                         AND pending_answer_text IS NOT NULL"""
+                )
+            ]
 
     def task_history(self):
         return [
@@ -485,8 +653,52 @@ class Repository:
             ORDER BY mistake_count DESC, g.title_fr
         """)]
 
-    def all_vocabulary(self):
-        return [dict(row) for row in self.connection.execute("""
+    @staticmethod
+    def vocabulary_key(word):
+        return unicodedata.normalize("NFC", str(word)).casefold().strip().replace("’", "'")
+
+    def all_vocabulary(self, month=None, starred_only=False):
+        parameters = []
+        where = ""
+        if month:
+            where = "WHERE s.study_date LIKE ?"
+            parameters.append(f"{month}-%")
+        starred_keys = {
+            row["word_key"] for row in self.connection.execute("SELECT word_key FROM vocabulary_stars")
+        }
+        result = []
+        for row in self.connection.execute(f"""
             SELECT v.*, s.study_date FROM vocabulary v JOIN daily_sessions s ON s.id = v.session_id
+            {where}
             ORDER BY s.study_date DESC, v.category, v.id
-        """)]
+        """, parameters):
+            item = dict(row)
+            item["starred"] = self.vocabulary_key(item["word"]) in starred_keys
+            if not starred_only or item["starred"]:
+                result.append(item)
+        return result
+
+    def set_vocabulary_star(self, vocabulary_id, starred):
+        row = self.connection.execute(
+            "SELECT word FROM vocabulary WHERE id = ?", (vocabulary_id,)
+        ).fetchone()
+        if not row:
+            return None
+        word = row["word"]
+        key = self.vocabulary_key(word)
+        with self._connection_lock:
+            with self.connection:
+                if starred:
+                    self.connection.execute(
+                        """INSERT INTO vocabulary_stars(word_key, display_word, starred_at)
+                           VALUES (?, ?, ?)
+                           ON CONFLICT(word_key) DO UPDATE SET
+                           display_word = excluded.display_word,
+                           starred_at = excluded.starred_at""",
+                        (key, word, datetime.now().astimezone().isoformat(timespec="seconds")),
+                    )
+                else:
+                    self.connection.execute(
+                        "DELETE FROM vocabulary_stars WHERE word_key = ?", (key,)
+                    )
+        return {"word": word, "starred": bool(starred)}

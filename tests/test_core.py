@@ -3,8 +3,10 @@ import sqlite3
 import tempfile
 import threading
 import unittest
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
+from french_learning.content import prompts_are_too_similar
 from french_learning.repository import Repository
 from french_learning.service import ConflictError, LearningService, ValidationError
 
@@ -25,6 +27,12 @@ class CoreLearningTest(unittest.TestCase):
         self.assertEqual(10, len(questions))
         self.assertEqual(5, sum(q["kind"] == "mcq" for q in questions))
         self.assertEqual(5, sum(q["kind"] == "fill" for q in questions))
+        mcq_answer_positions = [
+            question["options"].index(question["answer"])
+            for question in questions
+            if question["kind"] == "mcq"
+        ]
+        self.assertEqual({0, 1, 2, 3}, set(mcq_answer_positions))
         for question in questions:
             self.assertIsNone(re.search(r"[\u4e00-\u9fff]", question["prompt"]))
             if question["kind"] == "mcq":
@@ -36,6 +44,51 @@ class CoreLearningTest(unittest.TestCase):
         self.assertEqual(5, sum(v["category"] == "community" for v in session["vocabulary"]))
         self.assertEqual(5, sum(v["category"] == "daily" for v in session["vocabulary"]))
 
+    def test_timed_daily_quiz_starts_once_advances_one_question_and_expires(self):
+        now = [datetime(2026, 8, 24, 9, 0, tzinfo=timezone.utc)]
+        service = LearningService(self.repo, now_fn=lambda: now[0])
+        ready = service.get_or_create_day("2026-08-24")
+        self.assertEqual("ready", ready["status"])
+        self.assertEqual([], ready["questions"])
+        self.assertEqual([], ready["vocabulary"])
+        self.assertEqual(10, ready["question_count"])
+
+        with self.assertRaises(ConflictError):
+            service.answer_daily(ready["id"], 1, "x")
+        active = service.start_daily(ready["id"])
+        self.assertEqual("in_progress", active["status"])
+        self.assertEqual(1, active["current_position"])
+        self.assertEqual(1, len(active["questions"]))
+        self.assertNotIn("answer", active["questions"][0])
+        self.assertEqual(40, active["question_time_limit_seconds"])
+        self.assertEqual(
+            active["question_deadline_at"],
+            service.start_daily(ready["id"])["question_deadline_at"],
+        )
+
+        first = self.repo.get_session(ready["id"])["questions"][0]
+        active = service.answer_daily(ready["id"], first["id"], first["answer"])
+        self.assertEqual(2, active["current_position"])
+        expired_question = active["questions"][0]
+        now[0] = datetime.fromisoformat(active["question_deadline_at"]) + timedelta(seconds=1)
+        active = service.get_session(ready["id"])
+        self.assertEqual(3, active["current_position"])
+        stored = self.repo.get_session(ready["id"])
+        expired = next(item for item in stored["questions"] if item["id"] == expired_question["id"])
+        self.assertEqual("", expired["user_answer"])
+        self.assertTrue(expired["timed_out"])
+
+        while active["status"] != "completed":
+            current = active["questions"][0]
+            canonical = next(
+                item["answer"]
+                for item in self.repo.get_session(ready["id"])["questions"]
+                if item["id"] == current["id"]
+            )
+            active = service.answer_daily(ready["id"], current["id"], canonical)
+        self.assertEqual(9, active["score"])
+        self.assertEqual(10, len(active["questions"]))
+
     def test_same_day_is_idempotent_and_next_day_avoids_question_repeats(self):
         first = self.service.get_or_create_day("2026-08-23", reveal=True)
         again = self.service.get_or_create_day("2026-08-23", reveal=True)
@@ -44,6 +97,18 @@ class CoreLearningTest(unittest.TestCase):
         first_hashes = {q["content_hash"] for q in first["questions"]}
         second_hashes = {q["content_hash"] for q in second["questions"]}
         self.assertFalse(first_hashes & second_hashes)
+
+    def test_offline_bank_avoids_question_repeats_across_six_days(self):
+        seen = set()
+        for day in range(23, 29):
+            session = self.service.get_or_create_day(f"2026-08-{day}", reveal=True)
+            prompts = {question["prompt"] for question in session["questions"]}
+            self.assertEqual(10, len(prompts))
+            self.assertFalse(seen & prompts)
+            self.assertTrue(
+                all("词汇与用法" in question["explanation_zh"] for question in session["questions"])
+            )
+            seen.update(prompts)
 
     def test_concurrent_same_day_generation_creates_one_session(self):
         db_path = Path(self.temp.name) / "concurrent.db"
@@ -116,11 +181,31 @@ class CoreLearningTest(unittest.TestCase):
             second_words = {v["word"] for v in second["vocabulary"] if v["category"] == category}
             self.assertFalse(first_words & second_words)
 
+    def test_offline_recommendations_avoid_recent_questions_and_words_for_twelve_days(self):
+        recent_prompts = []
+        recent_vocabulary = {"community": [], "daily": []}
+        start = datetime(2026, 8, 1)
+        for offset in range(12):
+            day = (start + timedelta(days=offset)).date().isoformat()
+            session = self.service.get_or_create_day(day, reveal=True)
+            for question in session["questions"]:
+                self.assertFalse(any(
+                    prompts_are_too_similar(question["prompt"], previous)
+                    for previous in recent_prompts[-30:]
+                ))
+                recent_prompts.append(question["prompt"])
+            for category in recent_vocabulary:
+                words = {
+                    item["word"] for item in session["vocabulary"]
+                    if item["category"] == category
+                }
+                previous_words = set().union(*recent_vocabulary[category][-5:])
+                self.assertTrue(words.isdisjoint(previous_words))
+                recent_vocabulary[category].append(words)
+
     def test_answers_are_hidden_until_submission_then_every_option_is_explained(self):
-        session = self.service.get_or_create_day("2026-08-23")
-        for question in session["questions"]:
-            self.assertNotIn("answer", question)
-            self.assertNotIn("option_explanations", question)
+        session = self.service.get_or_create_day("2026-08-23", reveal=True)
+        self.assertEqual([], self.service.get_session(session["id"])["questions"])
         answers = {str(q["id"]): "réponse volontairement fausse" for q in session["questions"]}
         result = self.service.submit(session["id"], answers)
         self.assertEqual(0, result["score"])
@@ -194,7 +279,7 @@ class CoreLearningTest(unittest.TestCase):
             self.service.submit(session["id"], complete)
 
     def test_history_mistakes_and_grammar_aggregate_from_submissions(self):
-        session = self.service.get_or_create_day("2026-08-23")
+        session = self.service.get_or_create_day("2026-08-23", reveal=True)
         answers = {str(q["id"]): "x" for q in session["questions"]}
         self.service.submit(session["id"], answers)
         history = self.service.history()

@@ -7,6 +7,7 @@ from pathlib import Path
 
 from french_learning.repository import Repository
 from french_learning.service import ConflictError, LearningService, ValidationError
+from french_learning.tasks import offline_tasks
 
 
 class FakeWritingProvider:
@@ -64,6 +65,19 @@ class SlowWritingProvider(FakeWritingProvider):
         return super().grade_writing(task, answer_text)
 
 
+class BlockingWritingProvider(FakeWritingProvider):
+    def __init__(self):
+        self.calls = 0
+        self.started = threading.Event()
+        self.release = threading.Event()
+
+    def grade_writing(self, task, answer_text):
+        self.calls += 1
+        self.started.set()
+        self.release.wait(timeout=2)
+        return super().grade_writing(task, answer_text)
+
+
 class FailingWritingProvider:
     model = "failing-writing"
 
@@ -82,6 +96,59 @@ class ExtendedTasksTest(unittest.TestCase):
         self.repo.close()
         self.temp.cleanup()
 
+    def test_offline_writing_rotates_away_from_recent_topic(self):
+        _reading, previous = offline_tasks("2026-08-23")
+        _reading, current = offline_tasks("2026-08-24", [previous])
+        self.assertNotEqual(previous["title"], current["title"])
+        self.assertEqual("Raconter une journée sans téléphone", current["title"])
+        self.assertEqual(["B2", "C2"], [item["level"] for item in current["model_answers"]])
+
+    def test_offline_writing_rotates_six_distinct_formats_and_topics(self):
+        recent = []
+        generated = []
+        for offset in range(6):
+            day = (date(2026, 8, 24) + timedelta(days=offset)).isoformat()
+            _reading, writing = offline_tasks(day, recent)
+            generated.append(writing)
+            recent.append(writing)
+
+        self.assertEqual(6, len({item["title"] for item in generated}))
+        instructions = " ".join(item["instructions_fr"].casefold() for item in generated)
+        for text_type in ("forum", "témoignage", "note", "critique"):
+            self.assertIn(text_type, instructions)
+
+    def test_offline_reading_does_not_repeat_between_august_22_and_24(self):
+        first, _writing = offline_tasks("2026-08-22")
+        second, _writing = offline_tasks("2026-08-24")
+        self.assertNotEqual(first["title"], second["title"])
+        self.assertFalse(
+            {question["prompt"] for question in first["questions"]}
+            & {question["prompt"] for question in second["questions"]}
+        )
+        self.assertTrue(180 <= len(second["article_fr"].split()) <= 450)
+
+    def test_offline_reading_avoids_the_previous_five_readings(self):
+        recent = []
+        for offset in range(12):
+            day = (date(2026, 8, 26) + timedelta(days=offset)).isoformat()
+            reading, _writing = offline_tasks(
+                day, avoid_reading_topics=recent[-5:]
+            )
+            self.assertNotIn(
+                reading["title"], {item["title"] for item in recent[-5:]}
+            )
+            recent_prompts = {
+                question["prompt"]
+                for previous in recent[-5:]
+                for question in previous["questions"]
+            }
+            self.assertFalse(
+                {question["prompt"] for question in reading["questions"]}
+                & recent_prompts
+            )
+            self.assertTrue(180 <= len(reading["article_fr"].split()) <= 450)
+            recent.append(reading)
+
     def test_reading_has_four_hidden_answers_then_grades_and_enters_history(self):
         task = self.service.get_learning_task(self.today, "reading")
         self.assertNotIn("article_fr", task["content"])
@@ -91,6 +158,16 @@ class ExtendedTasksTest(unittest.TestCase):
         task = self.service.start_reading(task["id"])
         self.assertEqual("in_progress", task["status"])
         self.assertEqual(4, len(task["content"]["questions"]))
+        stored_task = self.repo.get_learning_task_by_id(task["id"])
+        self.assertIsNotNone(stored_task)
+        assert stored_task is not None
+        self.assertEqual(
+            {0, 1, 2, 3},
+            {
+                question["options"].index(question["answer"])
+                for question in stored_task["content"]["questions"]
+            },
+        )
         self.assertNotIn("answer", task["content"]["questions"][0])
         answers = {str(index): "x" for index in range(4)}
         result = self.service.submit_reading(task["id"], answers)
@@ -188,6 +265,53 @@ class ExtendedTasksTest(unittest.TestCase):
         self.assertEqual(1, self.repo.monthly_api_calls(self.today[:7]))
         stored = self.repo.get_learning_task_by_id(task["id"])
         self.assertEqual("ready", stored["status"] if stored else None)
+        restored = service.get_learning_task_by_id(task["id"])
+        self.assertEqual(answer, restored["draft_text"])
+        self.assertTrue(restored["correction_error"])
+
+    def test_queued_writing_survives_navigation_and_duplicate_submit(self):
+        provider = BlockingWritingProvider()
+        service = LearningService(self.repo, content_provider=provider)
+        task = service.get_learning_task(self.today, "writing")
+        answer = " ".join(
+            "je propose une solution concrète pour améliorer la vie des habitants".split()
+            * 6
+        )
+
+        queued = service.queue_writing(task["id"], answer)
+        self.assertEqual("grading", queued["status"])
+        self.assertTrue(provider.started.wait(timeout=1))
+        self.assertEqual("grading", service.get_learning_task_by_id(task["id"])["status"])
+        self.assertEqual("grading", service.queue_writing(task["id"], answer)["status"])
+        self.assertEqual(1, provider.calls)
+
+        provider.release.set()
+        completed = service.get_learning_task_by_id(task["id"])
+        for _attempt in range(100):
+            completed = service.get_learning_task_by_id(task["id"])
+            if completed["status"] == "completed":
+                break
+            time.sleep(0.01)
+        self.assertEqual("completed", completed["status"])
+        self.assertEqual(answer, completed["submission"]["answer_text"])
+
+    def test_service_resumes_a_persisted_grading_job(self):
+        task = self.service.get_learning_task(self.today, "writing")
+        answer = " ".join(
+            "je raconte une expérience personnelle et les changements que je souhaite adopter".split()
+            * 5
+        )
+        self.assertTrue(self.repo.claim_writing_task(task["id"], answer))
+
+        resumed = LearningService(self.repo, content_provider=FakeWritingProvider())
+        result = resumed.get_learning_task_by_id(task["id"])
+        for _attempt in range(100):
+            result = resumed.get_learning_task_by_id(task["id"])
+            if result["status"] == "completed":
+                break
+            time.sleep(0.01)
+        self.assertEqual("completed", result["status"])
+        self.assertEqual(answer, result["submission"]["answer_text"])
 
 
 if __name__ == "__main__":

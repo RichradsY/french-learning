@@ -11,10 +11,13 @@ from french_learning.mistral_provider import (
     MistralContentProvider,
     ProviderUnavailableError,
     _validate_api_key,
+    configured_api_key,
     replace_model_mcqs,
     validate_generated,
     validate_no_history_duplicates,
+    validate_reading_not_repeated,
     validate_source_urls,
+    validate_writing_not_repeated,
 )
 from french_learning.repository import Repository
 from french_learning.service import LearningService
@@ -115,7 +118,7 @@ class MistralProviderValidationTest(unittest.TestCase):
             content = json.dumps(self.writing_feedback(), ensure_ascii=False)
             return {"choices": [{"message": {"content": content}}], "usage": {}}
 
-        with patch("french_learning.mistral_provider.keychain_api_key", return_value="safe-key"):
+        with patch("french_learning.mistral_provider.configured_api_key", return_value="safe-key"):
             with patch.object(provider, "_post", fake_post):
                 feedback, _usage = provider.grade_writing(
                     {"title": "Un sujet", "min_words": 120, "max_words": 180},
@@ -130,17 +133,163 @@ class MistralProviderValidationTest(unittest.TestCase):
         self.assertIn("deux model_answers, ordonnés B2 puis C2", prompt_text)
         self.assertIn("même angle concret", prompt_text)
 
+    def test_writing_grader_repairs_an_invalid_first_response(self):
+        provider = MistralContentProvider()
+        valid = json.dumps(self.writing_feedback(), ensure_ascii=False)
+        responses = iter([
+            {
+                "choices": [{"message": {"content": "{}"}}],
+                "usage": {"prompt_tokens": 10, "completion_tokens": 5},
+            },
+            {
+                "choices": [{"message": {"content": valid}}],
+                "usage": {"prompt_tokens": 20, "completion_tokens": 15},
+            },
+        ])
+        requests = []
+
+        def fake_post(request, _key):
+            requests.append(request)
+            return next(responses)
+
+        with patch("french_learning.mistral_provider.configured_api_key", return_value="safe-key"):
+            with patch.object(provider, "_post", fake_post):
+                feedback, usage = provider.grade_writing(
+                    {"title": "Un sujet", "min_words": 120, "max_words": 180},
+                    "Je propose un espace plus calme pour les habitants.",
+                )
+
+        self.assertEqual(16, feedback["score_total"])
+        self.assertEqual(2, usage["request_count"])
+        self.assertEqual(30, usage["prompt_tokens"])
+        self.assertEqual(20, usage["completion_tokens"])
+        self.assertEqual(2, len(requests))
+        self.assertEqual(requests[0]["messages"], requests[1]["messages"][:2])
+        self.assertEqual("assistant", requests[1]["messages"][2]["role"])
+        self.assertEqual("{}", requests[1]["messages"][2]["content"])
+        self.assertIn(
+            "Writing score must be between 0 and 20",
+            requests[1]["messages"][3]["content"],
+        )
+        self.assertIn("clés grammar_key autorisées", requests[1]["messages"][3]["content"])
+
+    def test_writing_grader_reports_the_safe_repair_validation_reason(self):
+        provider = MistralContentProvider()
+        responses = iter([
+            {"choices": [{"message": {"content": "{}"}}], "usage": {}},
+            {"choices": [{"message": {"content": "{}"}}], "usage": {}},
+        ])
+
+        with patch("french_learning.mistral_provider.configured_api_key", return_value="safe-key"):
+            with patch.object(provider, "_post", side_effect=lambda *_args: next(responses)):
+                with self.assertRaisesRegex(
+                    ContentValidationError,
+                    "Writing score must be between 0 and 20",
+                ):
+                    provider.grade_writing(
+                        {"title": "Un sujet", "min_words": 120, "max_words": 180},
+                        "Je propose un espace plus calme pour les habitants.",
+                    )
+
+    def test_unknown_writing_taxonomy_is_kept_as_generic_written_expression(self):
+        feedback = self.writing_feedback()
+        feedback["errors"] = [{
+            "original": "plus calme",
+            "correction": "davantage apaisé",
+            "explanation_fr": "Cette formulation est plus précise.",
+            "explanation_zh": "这个表达更准确。",
+            "grammar_key": "accord-du-participe",
+        }]
+
+        validated = validate_writing_feedback(
+            feedback,
+            "Je propose un espace plus calme pour les habitants.",
+        )
+
+        self.assertEqual("expression-ecrite", validated["errors"][0]["grammar_key"])
+
+    def test_writing_total_is_derived_from_the_four_rubric_dimensions(self):
+        feedback = self.writing_feedback()
+        feedback["score_total"] = 19
+
+        validated = validate_writing_feedback(feedback)
+
+        self.assertEqual(16, validated["score_total"])
+
+    def test_invalid_error_quotes_are_dropped_without_losing_valid_feedback(self):
+        feedback = self.writing_feedback()
+        feedback["errors"] = [
+            {
+                "original": "phrase inventée",
+                "correction": "phrase corrigée",
+                "explanation_fr": "Cette phrase ne vient pas du texte.",
+                "explanation_zh": "这句话不在原文中。",
+                "grammar_key": "registre",
+            },
+            {
+                "original": "plus calme",
+                "correction": "davantage apaisé",
+                "explanation_fr": "Cette formulation est plus précise.",
+                "explanation_zh": "这个表达更准确。",
+                "grammar_key": "registre",
+            },
+        ]
+
+        validated = validate_writing_feedback(
+            feedback,
+            "Je propose un espace plus calme pour les habitants.",
+        )
+
+        self.assertEqual(["plus calme"], [item["original"] for item in validated["errors"]])
+
     def test_generation_prompt_prepares_independent_b2_and_c2_models_with_the_topic(self):
-        prompt_text = MistralContentProvider._prompt("2026-08-23", [], [], [])
+        recent_topic = {"title": "Proposer une amélioration dans votre quartier"}
+        prompt_text = MistralContentProvider._prompt(
+            "2026-08-23", [], [], [], [recent_topic]
+        )
         self.assertIn("model_answers", prompt_text)
         self.assertIn("préparées avant de voir la production de l'apprenant", prompt_text)
         self.assertIn("angle concret fixé dès la création du sujet", prompt_text)
+        self.assertIn(recent_topic["title"], prompt_text)
+        self.assertIn("B1 à C1", prompt_text)
+        self.assertIn("词汇与用法", prompt_text)
+
+    def test_repeated_reading_content_is_rejected(self):
+        reading = {
+            "title": "Une lecture déjà utilisée",
+            "article_fr": "Un article contrôlé.",
+            "questions": [{"prompt": "Pourquoi ce sujet ?"}],
+        }
+        with self.assertRaisesRegex(ContentValidationError, "Reading topic repeats"):
+            validate_reading_not_repeated(reading, [reading])
+
+    def test_generation_prompt_includes_recent_readings_to_avoid(self):
+        recent = [{"title": "Une lecture récente", "questions": ["Une question"]}]
+        prompt = MistralContentProvider._prompt(
+            "2026-08-26", [], [], [], [], recent
+        )
+        self.assertIn("LECTURES RÉCENTES À NE PAS RÉPÉTER", prompt)
+        self.assertIn("Une lecture récente", prompt)
+
+    def test_repeated_writing_topic_is_rejected(self):
+        writing = {
+            "title": "Proposer une amélioration dans votre quartier",
+            "context_fr": "Les habitants souhaitent disposer d'un nouvel espace calme dans leur quartier.",
+        }
+        with self.assertRaisesRegex(ContentValidationError, "repeats recent history"):
+            validate_writing_not_repeated(writing, [writing])
 
     def test_api_key_rejects_curl_config_injection_characters(self):
         self.assertEqual("valid_token-1234567890", _validate_api_key("valid_token-1234567890"))
         for unsafe in ("short", "token\noutput=/tmp/leak", 'token"proxy=evil.example'):
             with self.assertRaises(ProviderUnavailableError):
                 _validate_api_key(unsafe)
+
+    def test_environment_api_key_is_supported_without_project_storage(self):
+        with patch.dict("os.environ", {"MISTRAL_API_KEY": "valid_token-1234567890"}):
+            with patch("french_learning.mistral_provider.keychain_api_key") as keychain:
+                self.assertEqual("valid_token-1234567890", configured_api_key())
+        keychain.assert_not_called()
 
     def test_post_passes_key_via_private_curl_config_not_command_line(self):
         dummy_key = "test_token_1234567890"
@@ -220,6 +369,14 @@ class MistralProviderValidationTest(unittest.TestCase):
         })
         self.assertEqual(10, len(validated_questions))
         self.assertEqual(10, len(validated_vocabulary))
+        self.assertEqual(
+            {0, 1, 2, 3},
+            {
+                question["options"].index(question["answer"])
+                for question in validated_questions
+                if question["kind"] == "mcq"
+            },
+        )
 
     def test_generic_option_explanation_is_rejected(self):
         questions, vocabulary = generate_content("2026-08-23", {}, {})
@@ -317,6 +474,28 @@ class MistralProviderValidationTest(unittest.TestCase):
         with self.assertRaises(ContentValidationError):
             validate_no_history_duplicates(
                 questions, vocabulary, [], [vocabulary[0]["word"].upper()]
+            )
+
+    def test_all_online_question_kinds_must_avoid_history_and_daily_duplicates(self):
+        questions, vocabulary = generate_content("2026-08-23", {}, {})
+        with self.assertRaisesRegex(ContentValidationError, "repeats or closely resembles"):
+            validate_no_history_duplicates(
+                questions, vocabulary, [questions[0]["prompt"]], []
+            )
+        duplicate = [dict(question) for question in questions]
+        duplicate[1] = dict(duplicate[0])
+        with self.assertRaisesRegex(ContentValidationError, "unique"):
+            validate_generated({"questions": duplicate, "vocabulary": vocabulary})
+
+    def test_online_question_near_duplicate_is_rejected(self):
+        questions, vocabulary = generate_content("2026-08-23", {}, {})
+        questions[0]["prompt"] = "Il s'en est fallu de peu que le projet ___."
+        with self.assertRaisesRegex(ContentValidationError, "closely resembles"):
+            validate_no_history_duplicates(
+                questions,
+                vocabulary,
+                ["Il s'en est fallu de peu que nous ___ la correspondance."],
+                [],
             )
 
 

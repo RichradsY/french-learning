@@ -7,7 +7,7 @@ import sys
 from datetime import date
 from pathlib import Path
 
-from .mistral_provider import MistralContentProvider
+from .mistral_provider import MistralContentProvider, configure_keychain_api_key
 from .repository import Repository
 from .scheduler import DailyScheduler, install_launch_agents
 from .service import LearningService
@@ -18,7 +18,7 @@ DEFAULT_DB = PROJECT_DIR / "data" / "learning.db"
 
 
 def parser():
-    root = argparse.ArgumentParser(description="Local TCF B1 French learning system")
+    root = argparse.ArgumentParser(description="Local B1–C1 French learning system")
     commands = root.add_subparsers(dest="command", required=True)
     serve = commands.add_parser("serve", help="start the local web application")
     serve.add_argument("--host", default="127.0.0.1")
@@ -28,12 +28,20 @@ def parser():
     generate = commands.add_parser("generate-today", help="prepare today's idempotent lesson")
     generate.add_argument("--db", type=Path, default=DEFAULT_DB)
     generate.add_argument("--offline", action="store_true", help="disable Mistral generation")
+    commands.add_parser(
+        "configure-api",
+        help="securely save your own Mistral API key in macOS Keychain",
+    )
     commands.add_parser("install-scheduler", help="install and start macOS LaunchAgents")
     return root
 
 
 def main(argv=None):
     args = parser().parse_args(argv)
+    if args.command == "configure-api":
+        configure_keychain_api_key()
+        print("Mistral API key saved securely in macOS Keychain.")
+        return 0
     if args.command == "generate-today":
         repository = Repository(args.db)
         try:

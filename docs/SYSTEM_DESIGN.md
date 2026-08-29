@@ -23,7 +23,7 @@
 2. SQLite 持久化，无云端账号。
 3. 每日内容生成与跨日去重。
 4. 批改、得分、答案与完整选项解释。
-5. 历史、错题、语法点、词汇页。
+5. 历史、错题、语法点，以及独立的按日词汇日历与持久化星标。
 6. Web Speech API 法语发音。
 7. 内置调度器 + macOS LaunchAgent（07:00 唤醒运行）。
 8. 自动测试与 Git 版本管理。
@@ -41,7 +41,7 @@
 ```text
 Browser (HTML/CSS/JS)
   ├─ 今日训练 / 即时交互 / SpeechSynthesis
-  ├─ 历史、错题、语法、词汇
+  ├─ 历史、错题、语法、词汇日历与星标
   └─ fetch JSON API
           │ 127.0.0.1:8765
 Python HTTP Server

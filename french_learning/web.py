@@ -86,7 +86,10 @@ def _handler_class(service, speech):
                 if parsed.path == "/api/conjugations":
                     return self._json(200, service.conjugation_summary())
                 if parsed.path == "/api/vocabulary":
-                    return self._json(200, service.vocabulary())
+                    query = parse_qs(parsed.query)
+                    month = query.get("month", [None])[0]
+                    starred_only = query.get("starred", ["0"])[0] == "1"
+                    return self._json(200, service.vocabulary(month, starred_only))
                 task_type_match = re.fullmatch(r"/api/tasks/(reading|writing)", parsed.path)
                 if task_type_match:
                     requested = parse_qs(parsed.query).get("date", [date.today().isoformat()])[0]
@@ -113,10 +116,13 @@ def _handler_class(service, speech):
         def do_POST(self):
             parsed = urlparse(self.path)
             match = re.fullmatch(r"/api/sessions/(\d+)/submit", parsed.path)
+            daily_start_match = re.fullmatch(r"/api/sessions/(\d+)/start", parsed.path)
+            daily_answer_match = re.fullmatch(r"/api/sessions/(\d+)/answer", parsed.path)
             reading_start_match = re.fullmatch(r"/api/reading/(\d+)/start", parsed.path)
             reading_match = re.fullmatch(r"/api/reading/(\d+)/submit", parsed.path)
             writing_match = re.fullmatch(r"/api/writing/(\d+)/submit", parsed.path)
-            if parsed.path != "/api/speech" and not match and not reading_start_match and not reading_match and not writing_match:
+            vocabulary_star_match = re.fullmatch(r"/api/vocabulary/(\d+)/star", parsed.path)
+            if parsed.path != "/api/speech" and not match and not daily_start_match and not daily_answer_match and not reading_start_match and not reading_match and not writing_match and not vocabulary_star_match:
                 return self._error(404, "not_found", "Ressource introuvable")
             try:
                 length = int(self.headers.get("Content-Length", "0"))
@@ -125,6 +131,26 @@ def _handler_class(service, speech):
                 payload = json.loads(self.rfile.read(length))
                 if parsed.path == "/api/speech":
                     return self._audio(speech.render(payload.get("text")))
+                if daily_start_match:
+                    return self._json(
+                        200, service.start_daily(int(daily_start_match.group(1)))
+                    )
+                if daily_answer_match:
+                    return self._json(
+                        200,
+                        service.answer_daily(
+                            int(daily_answer_match.group(1)),
+                            payload.get("question_id"),
+                            payload.get("answer"),
+                        ),
+                    )
+                if vocabulary_star_match:
+                    return self._json(
+                        200,
+                        service.set_vocabulary_star(
+                            int(vocabulary_star_match.group(1)), payload.get("starred")
+                        ),
+                    )
                 if reading_start_match:
                     return self._json(200, service.start_reading(int(reading_start_match.group(1))))
                 if reading_match:
@@ -136,8 +162,8 @@ def _handler_class(service, speech):
                     )
                 if writing_match:
                     return self._json(
-                        200,
-                        service.submit_writing(
+                        202,
+                        service.queue_writing(
                             int(writing_match.group(1)), payload.get("text")
                         ),
                     )
