@@ -1,6 +1,6 @@
-# Mon français — Private, AI-assisted French practice
+# Mon français Coach — Your private, adaptable AI French coach
 
-Mon français is a local-first web application for structured daily French practice from CEFR B1 to C1. It combines grammar exercises, contextual vocabulary, timed reading, guided writing, progress history, and native macOS French speech in one distraction-free interface.
+Mon français Coach is a local-first web application for structured daily French practice from CEFR B1 to C1. It combines grammar exercises, contextual vocabulary, timed reading, guided writing, progress history, and native macOS French speech in one distraction-free interface.
 
 The application works fully offline with its reviewed content banks. Learners who want fresh AI-generated material and detailed writing feedback can connect their own Mistral API key. The key stays outside the repository and learning database, and the server only accepts loopback connections.
 
@@ -21,12 +21,22 @@ The application works fully offline with its reviewed content banks. Learners wh
 Requirements: Python 3.11+, macOS for native speech and Keychain integration, and `curl` for optional Mistral requests.
 
 ```bash
-git clone https://github.com/RichradsY/french-learning.git
-cd french-learning
+git clone https://github.com/RichradsY/mon-francais-coach.git
+cd mon-francais-coach
 python3 -m french_learning serve --offline
 ```
 
 Open http://127.0.0.1:8765. The offline mode requires no API key.
+
+## Preview
+
+| Vocabulary calendar | Writing feedback |
+|---|---|
+| ![Vocabulary calendar with daily words and favourites](docs/screenshots/vocabulary.png) | ![Detailed writing score and feedback](docs/screenshots/writing-feedback.png) |
+
+| Targeted writing correction | Mistake and grammar review |
+|---|---|
+| ![Targeted corrections based on a learner submission](docs/screenshots/writing-correction.png) | ![Active mistake and grammar review](docs/screenshots/review.png) |
 
 ## Use your own Mistral API key
 
@@ -64,6 +74,23 @@ python3 -m unittest discover -s tests -v
 
 The code uses only the Python standard library. See `docs/SYSTEM_DESIGN.md` and `docs/REQUIREMENTS_TRACEABILITY.md` for architecture and requirement coverage.
 
+## Make it yours with your own AI agent
+
+This repository is intentionally straightforward to modify with a coding agent. After cloning it, you can ask your preferred agent to adapt the learning experience to your goals—for example:
+
+- change the CEFR range or create a gradual A2 → B1 → B2 progression;
+- adjust the number, duration, balance, or difficulty of daily exercises;
+- focus on TCF/DELF preparation, workplace French, pronunciation, grammar, or writing;
+- change when Chinese help appears or replace it with another support language;
+- add exercise types, scoring dimensions, learning statistics, or a different compatible AI provider;
+- personalise prompts and review rules while retaining offline fallback and local validation.
+
+Example request for a coding agent:
+
+> Adapt this project for an A2 learner progressing toward B1. Keep the server loopback-only, preserve offline fallback and secure API-key handling, reduce the daily session to six exercises, add a gradual weekly difficulty curve, update validators and documentation, and run the relevant tests before finishing. Never read or commit local databases, logs, `.env` files, or credentials.
+
+Useful starting points are `french_learning/content.py` for controlled exercises, `french_learning/tasks.py` for reading and writing tasks, `french_learning/mistral_provider.py` for AI prompts and validation, and `tests/` for the behavioural contract. Ask the agent to preserve privacy safeguards, update tests together with behaviour, and show a final diff before committing. Never paste an API key into an agent prompt or source file.
+
 ## Project structure
 
 ```text
@@ -77,6 +104,10 @@ logs/              local runtime logs (ignored by Git)
 ## Documentation en français
 
 Application locale de pratique quotidienne du français avec correction, historique, erreurs, grammaire, vocabulaire contextualisé et prononciation.
+
+## Personnaliser avec votre propre agent IA
+
+Après avoir cloné le dépôt, vous pouvez demander à votre agent de développement d'adapter le niveau CECRL, la progression, le nombre et la durée des exercices, les types d'activités, la langue d'aide, le barème ou le fournisseur IA. Demandez-lui de conserver l'écoute locale, le repli hors ligne, la validation pédagogique et la gestion sécurisée des clés, puis de mettre à jour les tests avec chaque changement. Ne transmettez jamais votre clé API dans un prompt.
 
 ## Fonctionnalités
 
@@ -115,7 +146,7 @@ La lecture suit un état serveur `ready → in_progress → completed`. Avant le
 Prérequis : Python 3.11 ou plus récent.
 
 ```bash
-cd french-learning
+cd mon-francais-coach
 python3 -m french_learning serve
 ```
 
@@ -128,7 +159,7 @@ Arrêt : `Ctrl+C`.
 La commande suivante installe deux LaunchAgents utilisateur : le serveur local et la préparation quotidienne à 07:00.
 
 ```bash
-cd french-learning
+cd mon-francais-coach
 python3 -m french_learning install-scheduler
 ```
 
