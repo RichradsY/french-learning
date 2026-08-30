@@ -1,6 +1,6 @@
-# Mon français Coach — Your private, adaptable AI French coach
+# Mon français Coach — A private AI French coach for Chinese-speaking learners
 
-Mon français Coach is a local-first web application for structured daily French practice from CEFR B1 to C1. It combines grammar exercises, contextual vocabulary, timed reading, guided writing, progress history, and native macOS French speech in one distraction-free interface.
+Mon français Coach is a local-first web application designed first for native Chinese speakers who want structured daily French practice from CEFR B1 to C1. Exercises stay in French, while optional Chinese explanations, vocabulary support, and writing guidance help learners understand difficult points without replacing French immersion.
 
 The application works fully offline with its reviewed content banks. Learners who want fresh AI-generated material and detailed writing feedback can connect their own Mistral API key. The key stays outside the repository and learning database, and the server only accepts loopback connections.
 
@@ -12,6 +12,7 @@ The hosted demo uses sample data and browser-only simulation. It never asks for 
 
 - 10 daily grammar exercises: 5 multiple-choice questions and 5 fill-in-the-blank questions;
 - French-only prompts, with French and optional Chinese explanations after answering;
+- Chinese is the default support language, with help collapsed until the learner asks for it;
 - 10 contextual vocabulary items per day, calendar browsing, persistent favourites, and filtering;
 - a source-linked B2 reading task with a server-enforced eight-minute deadline;
 - a B1–B2 writing task with strict scoring out of 20, corrections, error review, personalised guidance, and B2/C2 model answers;
@@ -79,6 +80,10 @@ python3 -m unittest discover -s tests -v
 ```
 
 The code uses only the Python standard library. See `docs/SYSTEM_DESIGN.md` and `docs/REQUIREMENTS_TRACEABILITY.md` for architecture and requirement coverage.
+
+## Roadmap: support-language selection
+
+The current release is intentionally Chinese-first. The next planned product step is a support-language selector: Chinese remains the default, while learners can choose another explanation language without changing the French exercises, scoring rules, or immersion-first interface.
 
 ## Make it yours with your own AI agent
 

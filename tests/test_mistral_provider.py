@@ -263,6 +263,37 @@ class MistralProviderValidationTest(unittest.TestCase):
         with self.assertRaisesRegex(ContentValidationError, "Reading topic repeats"):
             validate_reading_not_repeated(reading, [reading])
 
+    def test_repeated_reading_article_is_rejected_after_title_change(self):
+        article = " ".join(
+            "La commune adapte progressivement son service aux besoins des habitants."
+            for _index in range(30)
+        )
+        previous = {
+            "title": "Un ancien titre",
+            "article_fr": article,
+            "questions": [{"prompt": "Quelle mesure est décrite ?"}],
+        }
+        candidate = {
+            "title": "Un titre entièrement différent",
+            "article_fr": article.replace("progressivement", "désormais", 1),
+            "questions": [{"prompt": "Quel changement est présenté ?"}],
+        }
+        with self.assertRaisesRegex(ContentValidationError, "similar article"):
+            validate_reading_not_repeated(candidate, [previous])
+
+    def test_generic_title_overlap_does_not_reject_a_distinct_reading(self):
+        previous = {
+            "title": "Les services publics changent dans les villes",
+            "article_fr": "Un article consacré aux horaires des administrations.",
+            "questions": [{"prompt": "Quand les bureaux ouvrent-ils ?"}],
+        }
+        candidate = {
+            "title": "Les bibliothèques changent avec les nouveaux usages",
+            "article_fr": "Un texte consacré aux espaces de lecture et aux ateliers.",
+            "questions": [{"prompt": "Quels services sont proposés ?"}],
+        }
+        validate_reading_not_repeated(candidate, [previous])
+
     def test_generation_prompt_includes_recent_readings_to_avoid(self):
         recent = [{"title": "Une lecture récente", "questions": ["Une question"]}]
         prompt = MistralContentProvider._prompt(

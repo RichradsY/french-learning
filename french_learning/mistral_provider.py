@@ -20,7 +20,12 @@ from .content import (
     distribute_correct_options,
     prompts_are_too_similar,
 )
-from .tasks import TaskValidationError, validate_learning_tasks, validate_writing_feedback
+from .tasks import (
+    TaskValidationError,
+    reading_similarity_reason,
+    validate_learning_tasks,
+    validate_writing_feedback,
+)
 
 API_URL = "https://api.mistral.ai/v1/chat/completions"
 MODEL = "mistral-medium-latest"
@@ -261,33 +266,14 @@ def validate_writing_not_repeated(writing, avoid_writing_topics):
 
 
 def validate_reading_not_repeated(reading, avoid_reading_topics):
-    def folded(value):
-        decomposed = unicodedata.normalize("NFKD", str(value).casefold())
-        without_accents = "".join(
-            char for char in decomposed if not unicodedata.combining(char)
-        )
-        return " ".join(re.sub(r"[^a-z0-9]+", " ", without_accents).split())
-
-    title = folded(reading.get("title", ""))
-    article = folded(reading.get("article_fr", ""))
-    questions = {
-        folded(item.get("prompt", ""))
-        for item in reading.get("questions", [])
-        if isinstance(item, dict)
-    }
     for previous in avoid_reading_topics:
         if not isinstance(previous, dict):
             continue
-        if title and title == folded(previous.get("title", "")):
-            raise ContentValidationError("Reading topic repeats recent history")
-        if article and article == folded(previous.get("article_fr", "")):
-            raise ContentValidationError("Reading article repeats recent history")
-        previous_questions = {
-            folded(item.get("prompt", "") if isinstance(item, dict) else item)
-            for item in previous.get("questions", [])
-        }
-        if questions & previous_questions:
-            raise ContentValidationError("Reading question repeats recent history")
+        reason = reading_similarity_reason(reading, previous)
+        if reason:
+            raise ContentValidationError(
+                f"Reading {reason} repeats recent history"
+            )
 
 
 def replace_model_mcqs(payload, avoid_prompts=()):

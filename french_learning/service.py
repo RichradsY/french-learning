@@ -89,7 +89,7 @@ class LearningService:
                                 self.content_provider.generate_bundle(
                                     *arguments,
                                     self.repository.recent_writing_topics(limit=None),
-                                    self.repository.recent_reading_topics(),
+                                    self.repository.recent_reading_topics(limit=None),
                                 )
                             )
                             task_bundle = (reading, writing)
@@ -116,7 +116,7 @@ class LearningService:
                     task_bundle = offline_tasks(
                         study_date,
                         self.repository.recent_writing_topics(limit=None),
-                        self.repository.recent_reading_topics(),
+                        self.repository.recent_reading_topics(limit=None),
                     )
                 questions, vocabulary = generated
                 try:

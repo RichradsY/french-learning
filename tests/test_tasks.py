@@ -7,7 +7,7 @@ from pathlib import Path
 
 from french_learning.repository import Repository
 from french_learning.service import ConflictError, LearningService, ValidationError
-from french_learning.tasks import offline_tasks
+from french_learning.tasks import TaskValidationError, offline_tasks
 
 
 class FakeWritingProvider:
@@ -127,19 +127,19 @@ class ExtendedTasksTest(unittest.TestCase):
         )
         self.assertTrue(180 <= len(second["article_fr"].split()) <= 450)
 
-    def test_offline_reading_avoids_the_previous_five_readings(self):
+    def test_offline_reading_never_reuses_full_history(self):
         recent = []
         for offset in range(12):
             day = (date(2026, 8, 26) + timedelta(days=offset)).isoformat()
             reading, _writing = offline_tasks(
-                day, avoid_reading_topics=recent[-5:]
+                day, avoid_reading_topics=recent
             )
             self.assertNotIn(
-                reading["title"], {item["title"] for item in recent[-5:]}
+                reading["title"], {item["title"] for item in recent}
             )
             recent_prompts = {
                 question["prompt"]
-                for previous in recent[-5:]
+                for previous in recent
                 for question in previous["questions"]
             }
             self.assertFalse(
@@ -148,6 +148,22 @@ class ExtendedTasksTest(unittest.TestCase):
             )
             self.assertTrue(180 <= len(reading["article_fr"].split()) <= 450)
             recent.append(reading)
+        with self.assertRaisesRegex(
+            TaskValidationError, "No unused offline reading"
+        ):
+            offline_tasks("2026-09-07", avoid_reading_topics=recent)
+
+    def test_service_checks_complete_reading_history(self):
+        limits = []
+        recent_reading_topics = self.repo.recent_reading_topics
+
+        def recording_recent_reading_topics(limit=5):
+            limits.append(limit)
+            return recent_reading_topics(limit)
+
+        self.repo.recent_reading_topics = recording_recent_reading_topics
+        self.service.get_or_create_day(self.today)
+        self.assertIn(None, limits)
 
     def test_reading_has_four_hidden_answers_then_grades_and_enters_history(self):
         task = self.service.get_learning_task(self.today, "reading")

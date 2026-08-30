@@ -2,16 +2,94 @@
 from __future__ import annotations
 
 import re
+import unicodedata
 from copy import deepcopy
 from datetime import date
 
 from .content import GRAMMAR, distribute_correct_options
+from .offline_readings import additional_offline_readings
 
 CJK = re.compile(r"[\u3400-\u9fff]")
 
 
 class TaskValidationError(ValueError):
     pass
+
+
+def _fold_reading_text(value):
+    decomposed = unicodedata.normalize("NFKD", str(value).casefold())
+    without_accents = "".join(
+        char for char in decomposed if not unicodedata.combining(char)
+    )
+    return " ".join(re.sub(r"[^a-z0-9]+", " ", without_accents).split())
+
+
+def _word_set(value):
+    stopwords = {
+        "avec", "dans", "des", "les", "pour", "plus", "une", "vers",
+    }
+    return {
+        word for word in _fold_reading_text(value).split()
+        if len(word) >= 4 and word not in stopwords
+    }
+
+
+def _shingles(value, size=3):
+    words = _fold_reading_text(value).split()
+    return {tuple(words[index:index + size]) for index in range(len(words) - size + 1)}
+
+
+def _jaccard(first, second):
+    union = first | second
+    return len(first & second) / len(union) if union else 0
+
+
+def reading_similarity_reason(reading, previous):
+    """Return why two readings duplicate each other, or ``None`` when distinct."""
+    title = _fold_reading_text(reading.get("title", ""))
+    previous_title = _fold_reading_text(previous.get("title", ""))
+    article = _fold_reading_text(reading.get("article_fr", ""))
+    previous_article = _fold_reading_text(previous.get("article_fr", ""))
+    if title and title == previous_title:
+        return "topic"
+    if article and article == previous_article:
+        return "article"
+
+    title_words = _word_set(title)
+    previous_title_words = _word_set(previous_title)
+    if (
+        len(title_words & previous_title_words) >= 3
+        and _jaccard(title_words, previous_title_words) >= 0.85
+    ):
+        return "similar topic"
+
+    article_words = _word_set(article)
+    previous_article_words = _word_set(previous_article)
+    if (
+        len(article.split()) >= 80
+        and len(previous_article.split()) >= 80
+        and (
+            (
+                len(article_words & previous_article_words) >= 20
+                and _jaccard(article_words, previous_article_words) >= 0.85
+            )
+            or _jaccard(_shingles(article), _shingles(previous_article)) >= 0.65
+        )
+    ):
+        return "similar article"
+
+    questions = {
+        _fold_reading_text(item.get("prompt", ""))
+        for item in reading.get("questions", [])
+        if isinstance(item, dict)
+    }
+    previous_questions = {
+        _fold_reading_text(item.get("prompt", "") if isinstance(item, dict) else item)
+        for item in previous.get("questions", [])
+    }
+    if questions & previous_questions:
+        return "question"
+    return None
 
 
 def _required_text(item, key):
@@ -496,6 +574,41 @@ def _school_garden_reading():
     }
 
 
+def _night_lighting_reading():
+    return {
+        "title": "L'éclairage nocturne s'adapte à la biodiversité",
+        "article_fr": " ".join([
+            "Dans plusieurs communes, l'éclairage public ne reste plus allumé avec la même intensité pendant toute la nuit.",
+            "Les municipalités cherchent à réduire leur consommation d'énergie, mais aussi à limiter les effets de la lumière artificielle sur les animaux.",
+            "De nombreux insectes tournent autour des lampadaires jusqu'à l'épuisement, tandis que certaines chauves-souris évitent les rues trop éclairées.",
+            "Les oiseaux migrateurs peuvent également perdre leurs repères lorsque le ciel nocturne devient difficile à distinguer.",
+            "Pour répondre à ces problèmes, des villes éteignent une partie des lampes après minuit ou réduisent progressivement leur puissance.",
+            "D'autres installent des détecteurs qui augmentent la lumière uniquement lorsqu'un piéton ou un cycliste approche.",
+            "La couleur compte aussi : une lumière chaude attire généralement moins d'insectes qu'une lumière blanche riche en bleu.",
+            "Ces changements doivent néanmoins tenir compte de la sécurité, notamment près des passages piétons et des arrêts de transport.",
+            "Avant de modifier tout un quartier, les services techniques testent donc plusieurs réglages et interrogent les habitants.",
+            "Ils mesurent ensuite la consommation, le sentiment de sécurité et parfois l'activité des espèces présentes.",
+            "Les premiers résultats montrent qu'il est possible d'éclairer au bon endroit et au bon moment plutôt que d'illuminer uniformément chaque rue.",
+            "Cette approche transforme l'éclairage en un service ajustable, capable de concilier déplacements nocturnes, économies et protection du vivant.",
+        ]),
+        "source_name": "Contenu hors ligne contrôlé",
+        "source_url": None,
+        "time_limit_seconds": 480,
+        "questions": [
+            {"prompt": "Pourquoi certaines communes modifient-elles leur éclairage nocturne ?", "options": ["Pour économiser l'énergie et protéger les animaux", "Pour augmenter la circulation automobile", "Pour remplacer tous les transports publics", "Pour rendre chaque rue aussi lumineuse en permanence"], "answer": "Pour économiser l'énergie et protéger les animaux", "explanation_fr": "Le texte associe la baisse de consommation à la limitation des effets sur la faune.", "explanation_zh": "文章同时强调节能和减少人工照明对动物的影响。"},
+            {"prompt": "Quel est le rôle des détecteurs installés dans certaines rues ?", "options": ["Renforcer la lumière lorsqu'un usager approche", "Compter uniquement les voitures stationnées", "Éteindre définitivement tous les lampadaires", "Mesurer la température des bâtiments"], "answer": "Renforcer la lumière lorsqu'un usager approche", "explanation_fr": "Les détecteurs adaptent l'intensité à la présence d'un piéton ou d'un cycliste.", "explanation_zh": "探测器在行人或骑车人接近时提高亮度。"},
+            {"prompt": "Pourquoi les villes réalisent-elles des tests avant une modification générale ?", "options": ["Pour comparer les réglages et recueillir l'avis des habitants", "Pour supprimer les passages piétons", "Pour interdire les déplacements après minuit", "Pour attirer davantage d'insectes"], "answer": "Pour comparer les réglages et recueillir l'avis des habitants", "explanation_fr": "Les essais permettent d'évaluer plusieurs effets avant d'étendre le dispositif.", "explanation_zh": "试验用于比较设置并在全面推广前收集居民意见。"},
+            {"prompt": "Quelle stratégie générale la conclusion recommande-t-elle ?", "options": ["Éclairer selon le lieu et le moment", "Illuminer uniformément toutes les rues", "Choisir seulement les lampes les plus puissantes", "Éteindre sans tenir compte de la sécurité"], "answer": "Éclairer selon le lieu et le moment", "explanation_fr": "La conclusion privilégie un service ajustable plutôt qu'un éclairage uniforme.", "explanation_zh": "结论主张按地点和时间调整照明，而不是统一强光照明。"},
+        ],
+        "vocabulary": [
+            {"word": "l'épuisement", "definition_fr": "Un état de fatigue extrême.", "definition_zh": "精疲力竭。"},
+            {"word": "un repère", "definition_fr": "Un élément qui aide à s'orienter.", "definition_zh": "用于辨别方向的参照物。"},
+            {"word": "un réglage", "definition_fr": "La manière d'ajuster le fonctionnement d'un appareil.", "definition_zh": "设置；调节方式。"},
+            {"word": "concilier", "definition_fr": "Rendre compatibles plusieurs besoins.", "definition_zh": "协调；兼顾。"},
+        ],
+    }
+
+
 def offline_tasks(study_date, avoid_writing_topics=(), avoid_reading_topics=()):
     reading = {
         "title": "Les bibliothèques changent avec les nouveaux usages",
@@ -564,21 +677,23 @@ def offline_tasks(study_date, avoid_writing_topics=(), avoid_reading_topics=()):
         _urban_trees_reading(),
         _tool_library_reading(),
         _school_garden_reading(),
-    ]
-    used_reading_titles = {
-        str(item.get("title", "")).casefold().strip()
-        for item in avoid_reading_topics
-        if isinstance(item, dict)
-    }
+        _night_lighting_reading(),
+    ] + additional_offline_readings()
     start = date.fromisoformat(study_date).toordinal() % len(readings)
     ordered_readings = readings[start:] + readings[:start]
     reading = next(
         (
             candidate for candidate in ordered_readings
-            if candidate["title"].casefold() not in used_reading_titles
+            if not any(
+                reading_similarity_reason(candidate, previous)
+                for previous in avoid_reading_topics
+                if isinstance(previous, dict)
+            )
         ),
-        ordered_readings[0],
+        None,
     )
+    if reading is None:
+        raise TaskValidationError("No unused offline reading is available")
     distribute_correct_options(reading["questions"], f"{study_date}:reading-options")
     candidates = [
         _transport_writing(),

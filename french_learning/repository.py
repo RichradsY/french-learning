@@ -191,7 +191,7 @@ class Repository:
             })
         return topics
 
-    def recent_reading_topics(self, limit=5):
+    def recent_reading_topics(self, limit=None):
         query = """
             SELECT title, content_json FROM learning_tasks
             WHERE task_type = 'reading' ORDER BY study_date DESC
